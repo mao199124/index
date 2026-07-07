@@ -699,7 +699,134 @@
   .my-request-card .mr-product { font-size: 15px; font-weight: 600; color: #222; }
   .my-request-card .mr-detail { font-size: 12px; color: #888; line-height: 1.8; }
   .my-request-card .mr-status { margin-top: 8px; }
-</style>
+
+  /* ========== 论坛分区标签 ========== */
+  .forum-category-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+  .forum-cat-tab {
+    padding: 6px 18px; border: 1px solid #e0e0e0; background: #fff;
+    border-radius: 20px; cursor: pointer; font-size: 13px; color: #666;
+    transition: all 0.25s; font-weight: 500;
+  }
+  .forum-cat-tab:hover { border-color: #c62828; color: #c62828; }
+  .forum-cat-tab.active { background: #c62828; color: #fff; border-color: #c62828; }
+
+  /* ========== 论坛帖子卡片 ========== */
+  .forum-post-card {
+    background: #fff; border-radius: 14px; padding: 20px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05); margin-bottom: 16px;
+    transition: all 0.3s;
+  }
+  .forum-post-card:hover { box-shadow: 0 6px 24px rgba(0,0,0,0.1); }
+  .forum-post-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+  .forum-post-avatar {
+    width: 40px; height: 40px; border-radius: 50%; overflow: hidden;
+    flex-shrink: 0; background: #fce4e4; display: flex; align-items: center; justify-content: center;
+  }
+  .forum-post-avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .forum-post-author { font-size: 14px; font-weight: 600; color: #333; }
+  .forum-post-time { font-size: 11px; color: #bbb; margin-top: 2px; }
+  .forum-post-content { font-size: 14px; color: #444; line-height: 1.8; margin-bottom: 14px; white-space: pre-wrap; }
+  .forum-post-actions { display: flex; gap: 16px; align-items: center; }
+  .forum-action-btn {
+    display: flex; align-items: center; gap: 4px;
+    padding: 4px 12px; border: 1px solid #e0e0e0; background: #fff;
+    border-radius: 16px; cursor: pointer; font-size: 12px; color: #888;
+    transition: all 0.25s;
+  }
+  .forum-action-btn:hover { border-color: #c62828; color: #c62828; }
+  .forum-action-btn.liked { color: #c62828; border-color: #c62828; }
+  .forum-action-btn.faved { color: #ffc107; border-color: #ffc107; }
+  .forum-reply-count { font-size: 12px; color: #999; }
+
+  /* ========== 回复楼层 ========== */
+  .reply-section { margin-top: 14px; padding-top: 14px; border-top: 1px solid #f0f0f0; }
+  .reply-item {
+    display: flex; gap: 10px; padding: 10px 0;
+    border-bottom: 1px solid #f8f8f8;
+  }
+  .reply-item:last-child { border-bottom: none; }
+  .reply-avatar {
+    width: 30px; height: 30px; border-radius: 50%; overflow: hidden;
+    flex-shrink: 0; background: #f0f0f0; display: flex; align-items: center; justify-content: center;
+    font-size: 11px;
+  }
+  .reply-avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .reply-body { flex: 1; }
+  .reply-author { font-size: 12px; font-weight: 600; color: #555; }
+  .reply-author .reply-floor { color: #c62828; font-weight: 700; margin-right: 4px; }
+  .reply-mention { color: #c62828; font-weight: 600; }
+  .reply-content { font-size: 12px; color: #666; line-height: 1.6; margin-top: 2px; white-space: pre-wrap; }
+  .reply-time { font-size: 10px; color: #ccc; margin-top: 2px; }
+  .reply-input-area {
+    display: flex; gap: 8px; margin-top: 10px; align-items: flex-start;
+  }
+  .reply-input-area input {
+    flex: 1; padding: 8px 14px; border: 1.5px solid #e0e0e0; border-radius: 20px;
+    font-size: 12px; outline: none; transition: border-color 0.3s;
+  }
+  .reply-input-area input:focus { border-color: #c62828; }
+  .reply-input-area button {
+    padding: 8px 16px; background: #c62828; color: #fff; border: none;
+    border-radius: 20px; font-size: 12px; cursor: pointer; transition: all 0.3s;
+  }
+  .reply-input-area button:hover { background: #a51e1e; }
+
+  /* ========== 信息交流排序/筛选 ========== */
+  .info-sort-bar { display: flex; gap: 8px; align-items: center; margin-bottom: 20px; flex-wrap: wrap; }
+  .info-sort-btn {
+    padding: 6px 16px; border: 1px solid #e0e0e0; background: #fff;
+    border-radius: 16px; cursor: pointer; font-size: 12px; color: #666;
+    transition: all 0.25s;
+  }
+  .info-sort-btn:hover { border-color: #c62828; color: #c62828; }
+  .info-sort-btn.active { background: #c62828; color: #fff; border-color: #c62828; }
+
+  /* ========== 信息卡片互动 ========== */
+  .info-card-actions { display: flex; gap: 12px; margin-top: 10px; }
+  .info-action-btn {
+    display: flex; align-items: center; gap: 4px;
+    padding: 4px 10px; border: 1px solid #e0e0e0; background: #fff;
+    border-radius: 14px; cursor: pointer; font-size: 11px; color: #888;
+    transition: all 0.25s;
+  }
+  .info-action-btn:hover { border-color: #c62828; color: #c62828; }
+  .info-action-btn.liked { color: #c62828; border-color: #c62828; }
+  .info-action-btn.faved { color: #ffc107; border-color: #ffc107; }
+
+  /* ========== 信息评论区 ========== */
+  .info-comment-section { margin-top: 10px; padding-top: 10px; border-top: 1px solid #f0f0f0; }
+  .info-comment-item {
+    display: flex; gap: 8px; padding: 6px 0; font-size: 12px;
+  }
+  .info-comment-author { font-weight: 600; color: #555; }
+  .info-comment-text { color: #666; }
+  .info-comment-time { font-size: 10px; color: #ccc; margin-top: 1px; }
+  .info-comment-input {
+    display: flex; gap: 6px; margin-top: 8px;
+  }
+  .info-comment-input input {
+    flex: 1; padding: 6px 12px; border: 1.5px solid #e0e0e0; border-radius: 16px;
+    font-size: 12px; outline: none; transition: border-color 0.3s;
+  }
+  .info-comment-input input:focus { border-color: #c62828; }
+  .info-comment-input button {
+    padding: 6px 14px; background: #c62828; color: #fff; border: none;
+    border-radius: 16px; font-size: 12px; cursor: pointer; transition: all 0.3s;
+  }
+  .info-comment-input button:hover { background: #a51e1e; }
+
+  /* ========== @ 提及高亮 ========== */
+  .mention-highlight { color: #c62828; font-weight: 600; }
+
+  /* ========== 消息提醒红点 ========== */
+  .notification-bell { position: relative; cursor: pointer; font-size: 18px; }
+  .notification-bell .badge {
+    position: absolute; top: -4px; right: -6px;
+    background: #c62828; color: #fff; font-size: 9px;
+    padding: 1px 5px; border-radius: 8px; min-width: 14px; text-align: center;
+  }
+
+  </style>
 </head>
 <body>
 
@@ -1015,6 +1142,8 @@ let userTags = [];
 let userAlbum = [];
 let myStore = null; // { name, description, address, phone, createdAt }
 let publishedInfo = [];
+let infoComments = [];
+let forumReplies = [];
 let publishedProducts = [];
 let buyRequests = []; // { id, productId, productName, buyerName, buyerAvatar, quantity, expectedPrice, note, status, createdAt }
 let reviews = []; // { id, targetName, reviewerName, reviewerAvatar, rating, text, createdAt }
@@ -1084,6 +1213,8 @@ function saveToStorage() {
   localStorage.setItem('reviews', JSON.stringify(reviews));
   localStorage.setItem('forums', JSON.stringify(forums));
   localStorage.setItem('forumPosts', JSON.stringify(forumPosts));
+  localStorage.setItem('infoComments', JSON.stringify(infoComments));
+  localStorage.setItem('forumReplies', JSON.stringify(forumReplies));
 }
 
 function updateIdentityUI() {
@@ -1204,10 +1335,13 @@ function updateStats() {
   document.getElementById('statForums').textContent = forums.length;
 }
 
+
 // ========== 信息交流 ==========
+let infoSortMode = 'newest'; // newest, hottest, category
+
 function showManageSub(sub) {
   document.querySelectorAll('#manageView .sub-btn').forEach(b => b.classList.remove('active'));
-  event.target.classList.add('active');
+  if (event && event.target) event.target.classList.add('active');
   const c = document.getElementById('manageContent');
   if (sub === 'publish') {
     c.innerHTML = `
@@ -1235,36 +1369,129 @@ function showManageSub(sub) {
         <button class="submit-btn" onclick="publishInfo()">发布信息</button>
       </div>`;
   } else {
-    let html = `<div class="page-title">已发布信息</div>`;
-    if (publishedInfo.length === 0) {
-      html += '<div class="empty-state"><div class="empty-icon">&#128196;</div><div class="empty-text">暂无发布的信息</div></div>';
-    } else {
-      html += '<div class="content-list">';
-      publishedInfo.forEach((item, i) => {
-        html += `
-          <div class="content-card">
-            ${item.image ? `<img class="card-img" src="${item.image}">` : ''}
-            <div class="card-body">
-              <div class="card-title">${esc(item.title)} ${item.tag ? '<span style="font-size:11px;padding:2px 8px;background:#fce4e4;color:#c62828;border-radius:8px;">'+esc(item.tag)+'</span>' : ''}</div>
-              <div class="card-desc">${esc(item.content)}</div>
-              <div class="card-meta">发布于 ${item.time}</div>
-            </div>
-            <button class="revoke-btn" onclick="revokeInfo(${i})">撤销</button>
-          </div>`;
-      });
-      html += '</div>';
-    }
+    let html = '<div class="page-title">已发布信息</div>';
+    // Sort bar
+    html += '<div class="info-sort-bar">';
+    html += '<button class="info-sort-btn '+(infoSortMode==='newest'?'active':'')+'" onclick="setInfoSort(\'newest\',this)">最新</button>';
+    html += '<button class="info-sort-btn '+(infoSortMode==='hottest'?'active':'')+'" onclick="setInfoSort(\'hottest\',this)">最热</button>';
+    const tags = [...new Set(publishedInfo.map(i => i.tag).filter(Boolean))];
+    tags.forEach(t => {
+      html += '<button class="info-sort-btn" onclick="setInfoSort(\'cat_'+esc(t)+'\',this)">'+esc(t)+'</button>';
+    });
+    html += '</div><div id="infoListContainer">';
+    html += buildInfoList();
+    html += '</div>';
     c.innerHTML = html;
   }
 }
+
+function setInfoSort(mode, btn) {
+  document.querySelectorAll('.info-sort-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  infoSortMode = mode;
+  document.getElementById('infoListContainer').innerHTML = buildInfoList();
+}
+
+function buildInfoList() {
+  let list = [...publishedInfo];
+  if (infoSortMode === 'newest') {
+    // Already sorted by newest first (unshift on publish)
+  } else if (infoSortMode === 'hottest') {
+    list.sort((a, b) => ((b.likeCount||0)+(b.favCount||0)) - ((a.likeCount||0)+(a.favCount||0)));
+  } else if (infoSortMode.startsWith('cat_')) {
+    const tag = infoSortMode.replace('cat_', '');
+    list = list.filter(i => i.tag === tag);
+  }
+  if (list.length === 0) {
+    return '<div class="empty-state"><div class="empty-icon">\&#128196;</div><div class="empty-text">暂无发布的信息</div></div>';
+  }
+  let html = '<div class="content-list">';
+  list.forEach((item) => {
+    const comments = infoComments.filter(c => c.infoId === item.id);
+    const isLiked = item.likes && item.likes.includes(getCurrentUserName());
+    const isFaved = item.favorites && item.favorites.includes(getCurrentUserName());
+    html += `
+      <div class="content-card">
+        ${item.image ? '<img class="card-img" src="'+item.image+'">' : ''}
+        <div class="card-body">
+          <div class="card-title">${esc(item.title)} ${item.tag ? '<span style="font-size:11px;padding:2px 8px;background:#fce4e4;color:#c62828;border-radius:8px;">'+esc(item.tag)+'</span>' : ''}</div>
+          <div class="card-desc">${esc(item.content)}</div>
+          <div class="card-meta">发布于 ${item.time}</div>
+          <div class="info-card-actions">
+            <button class="info-action-btn ${isLiked?'liked':''}" onclick="toggleInfoLike(${item.id},this)">
+              \&#10084; ${item.likeCount || 0}
+            </button>
+            <button class="info-action-btn ${isFaved?'faved':''}" onclick="toggleInfoFavorite(${item.id},this)">
+              \&#9733; ${item.favCount || 0}
+            </button>
+          </div>
+          <div class="info-comment-section">
+            ${comments.length > 0 ? comments.map(c => `
+              <div class="info-comment-item">
+                <div>
+                  <div class="info-comment-author">${esc(c.authorName)}</div>
+                  <div class="info-comment-text">${esc(c.content)}</div>
+                  <div class="info-comment-time">${c.time}</div>
+                </div>
+              </div>`).join('') : ''}
+            <div class="info-comment-input">
+              <input type="text" placeholder="写评论..." onkeydown="if(event.key==='Enter')submitInfoComment(${item.id},this)">
+              <button onclick="submitInfoComment(${item.id},this.previousElementSibling)">发送</button>
+            </div>
+          </div>
+        </div>
+        <button class="revoke-btn" onclick="revokeInfo(${item.id})">撤销</button>
+      </div>`;
+  });
+  html += '</div>';
+  return html;
+}
+
+function toggleInfoLike(id, btnEl) {
+  const item = publishedInfo.find(i => i.id === id);
+  if (!item.likes) item.likes = [];
+  const user = getCurrentUserName();
+  const idx = item.likes.indexOf(user);
+  if (idx > -1) { item.likes.splice(idx, 1); item.likeCount = (item.likeCount||0)-1; }
+  else { item.likes.push(user); item.likeCount = (item.likeCount||0)+1; }
+  saveToStorage();
+  btnEl.classList.toggle('liked');
+  btnEl.innerHTML = '\&#10084; '+ (item.likeCount||0);
+}
+
+function toggleInfoFavorite(id, btnEl) {
+  const item = publishedInfo.find(i => i.id === id);
+  if (!item.favorites) item.favorites = [];
+  const user = getCurrentUserName();
+  const idx = item.favorites.indexOf(user);
+  if (idx > -1) { item.favorites.splice(idx, 1); item.favCount = (item.favCount||0)-1; }
+  else { item.favorites.push(user); item.favCount = (item.favCount||0)+1; }
+  saveToStorage();
+  btnEl.classList.toggle('faved');
+  btnEl.innerHTML = '\&#9733; '+ (item.favCount||0);
+}
+
+function submitInfoComment(id, inputEl) {
+  const text = inputEl.value.trim();
+  if (!text) return;
+  infoComments.push({
+    id: Date.now(), infoId: id,
+    authorName: getCurrentUserName(), content: text,
+    time: new Date().toLocaleString()
+  });
+  saveToStorage();
+  showManageSub('published');
+}
+
 function previewInfoImage(e) {
   const f = e.target.files[0]; if (!f) return;
   const reader = new FileReader();
   reader.onload = function(ev) {
-    document.getElementById('infoPreviewBox').innerHTML = `<img src="${ev.target.result}">`;
+    document.getElementById('infoPreviewBox').innerHTML = '<img src="'+ev.target.result+'">';
   };
   reader.readAsDataURL(f);
 }
+
 function publishInfo() {
   const title = document.getElementById('infoTitle').value.trim();
   const content = document.getElementById('infoContent').value.trim();
@@ -1272,7 +1499,10 @@ function publishInfo() {
   const preview = document.getElementById('infoPreviewBox').querySelector('img');
   const image = preview ? preview.src : '';
   if (!title || !content) { showAlert('请填写标题和内容'); return; }
-  publishedInfo.unshift({ title, content, tag, image, time: new Date().toLocaleString() });
+  publishedInfo.unshift({
+    title, content, tag, image, time: new Date().toLocaleString(),
+    likeCount: 0, favCount: 0, likes: [], favorites: []
+  });
   saveToStorage(); updateStats();
   document.getElementById('infoTitle').value = '';
   document.getElementById('infoContent').value = '';
@@ -1281,13 +1511,14 @@ function publishInfo() {
   showNotification('信息发布成功');
   showManageSub('published');
 }
-function revokeInfo(i) {
+
+function revokeInfo(id) {
   if (!confirm('确定撤销这条信息？')) return;
-  publishedInfo.splice(i, 1);
+  publishedInfo = publishedInfo.filter(i => i.id !== id);
+  infoComments = infoComments.filter(c => c.infoId !== id);
   saveToStorage(); updateStats();
   showManageSub('published');
 }
-
 // ========== 购物买卖 ==========
 function showBusinessSub(sub) {
   document.querySelectorAll('#businessView .sub-btn').forEach(b => b.classList.remove('active'));
@@ -1298,7 +1529,7 @@ function showBusinessSub(sub) {
     if (!myStore) { c.innerHTML = '<div class="page-title">我的商店</div><div class="empty-state"><div class="empty-icon">&#128722;</div><div class="empty-text">你还没有建立商店</div></div>'; return; }
     const storeProducts = publishedProducts.filter(p => p.sellerName === myStore.name);
     const storeReviews = reviews.filter(r => r.targetName === myStore.name);
-    const avgRating = storeReviews.length ? (storeReviews.reduce((s,r)=>s+r.rating,0)/storeReviews.length).toFixed(1) : '暂无';
+    const avgRating = storeReviews.length ? (storeReviews.reduce((s,r)=> s+r.rating, 0)/storeReviews.length).toFixed(1) : '暂无';
     let stars = '';
     for (let i=1;i<=5;i++) stars += i <= Math.round(avgRating) ? '&#9733;' : '&#9734;';
     c.innerHTML = `
@@ -1381,8 +1612,7 @@ function showBusinessSub(sub) {
       html += '<div class="empty-state"><div class="empty-icon">&#128722;</div><div class="empty-text">暂无已发布的商品</div></div>';
     } else {
       html += '<div class="content-list">';
-      storeProducts.forEach((p, idx) => {
-        const realIdx = publishedProducts.findIndex(prod => prod === p);
+      storeProducts.forEach((p) => {
         html += `
           <div class="product-card">
             <img class="product-img" src="${p.image}">
@@ -1393,7 +1623,7 @@ function showBusinessSub(sub) {
               <span class="product-category">${esc(p.category)}</span>
               <div class="product-meta">发布于 ${p.time}</div>
             </div>
-            <button class="revoke-btn" onclick="revokeProduct(${realIdx})">撤销</button>
+            <button class="revoke-btn" onclick="revokeProduct(${p.id})">撤销</button>
           </div>`;
       });
       html += '</div>';
@@ -1422,7 +1652,7 @@ function showBusinessSub(sub) {
       html += '<div class="content-list">';
       merchants.forEach(m => {
         const mReviews = reviews.filter(r => r.targetName === m.name);
-        const avg = mReviews.length ? (mReviews.reduce((s,r)=>s+r.rating,0)/mReviews.length).toFixed(1) : '暂无';
+        const avg = mReviews.length ? (mReviews.reduce((s,r)=> s+r.rating, 0)/mReviews.length).toFixed(1) : '暂无';
         let stars = '';
         for (let i=1;i<=5;i++) stars += i <= Math.round(avg) ? '&#9733;' : '&#9734;';
         html += `
@@ -1473,7 +1703,7 @@ function showStoreTab(e, tab) {
   e.target.classList.add('active');
   const storeProducts = publishedProducts.filter(p => p.sellerName === myStore.name);
   const storeReviews = reviews.filter(r => r.targetName === myStore.name);
-  const avgRating = storeReviews.length ? (storeReviews.reduce((s,r)=>s+r.rating,0)/storeReviews.length).toFixed(1) : '暂无';
+  const avgRating = storeReviews.length ? (storeReviews.reduce((s,r)=> s+r.rating, 0)/storeReviews.length).toFixed(1) : '暂无';
   let stars = '';
   for (let i=1;i<=5;i++) stars += i <= Math.round(avgRating) ? '&#9733;' : '&#9734;';
   showStoreTabContent(tab, storeProducts, storeReviews, avgRating, stars);
@@ -1484,7 +1714,6 @@ function showStoreTabContent(tab, storeProducts, storeReviews, avgRating, stars)
     if (storeProducts.length === 0) { c.innerHTML = '<div class="empty-state"><div class="empty-icon">&#128722;</div><div class="empty-text">暂无在售商品</div></div>'; return; }
     let html = '<div class="content-list">';
     storeProducts.forEach(p => {
-      const idx = publishedProducts.findIndex(prod => prod === p);
       html += `
         <div class="product-card">
           <img class="product-img" src="${p.image}">
@@ -1495,7 +1724,7 @@ function showStoreTabContent(tab, storeProducts, storeReviews, avgRating, stars)
             <span class="product-category">${esc(p.category)}</span>
             <div class="product-meta">发布于 ${p.time}</div>
           </div>
-          <button class="revoke-btn" onclick="revokeProduct(${idx})">撤销</button>
+          <button class="revoke-btn" onclick="revokeProduct(${p.id})">撤销</button>
         </div>`;
     });
     html += '</div>';
@@ -1620,16 +1849,26 @@ function publishProduct() {
   const preview = document.getElementById('prodPreviewBox').querySelector('img');
   const image = preview ? preview.src : '';
   if (!name || !desc || !price || !stock || !image) { showAlert('请填写完整商品信息'); return; }
-  publishedProducts.push({ name, description: desc, price: parseFloat(price), stock: parseInt(stock), category, image, sellerName: myStore.name, sellerAvatar: userAvatar, time: new Date().toLocaleString() });
+  publishedProducts.push({ id: Date.now(), name, description: desc, price: parseFloat(price), stock: parseInt(stock), category, image, sellerName: myStore.name, sellerAvatar: userAvatar, time: new Date().toLocaleString() });
   saveToStorage(); updateStats();
   showNotification('商品发布成功');
   showBusinessSub('myProducts');
 }
 function revokeProduct(idx) {
   if (!confirm('确定撤销该商品？')) return;
-  publishedProducts.splice(idx, 1);
+  // 先用 idx 尝试，如果对应商品不存在则兜底用 findIndex
+  let realIdx = idx;
+  if (!publishedProducts[idx]) {
+    realIdx = publishedProducts.findIndex(p => p && p.id === idx);
+    if (realIdx === -1) realIdx = idx;
+  }
+  publishedProducts.splice(realIdx, 1);
   saveToStorage(); updateStats();
-  showBusinessSub('myProducts');
+  // 刷新当前可能打开的多个视图
+  try { showBusinessSub('myProducts'); } catch(e) {}
+  try { showStoreTabContent('products', publishedProducts.filter(p => p.sellerName === (myStore && myStore.name)), [], '暂无', ''); } catch(e) {}
+  try { renderProductList(publishedProducts); } catch(e) {}
+  showNotification('商品已撤销');
 }
 
 // ========== 购买请求 ==========
@@ -1718,7 +1957,7 @@ function submitReview() {
 function showMerchantDetail(name) {
   const mProducts = publishedProducts.filter(p => p.sellerName === name);
   const mReviews = reviews.filter(r => r.targetName === name);
-  const avg = mReviews.length ? (mReviews.reduce((s,r)=>s+r.rating,0)/mReviews.length).toFixed(1) : '暂无';
+  const avg = mReviews.length ? (mReviews.reduce((s,r)=> s+r.rating, 0)/mReviews.length).toFixed(1) : '暂无';
   let stars = '';
   for (let i=1;i<=5;i++) stars += i <= Math.round(avg) ? '&#9733;' : '&#9734;';
   const merchant = mProducts.length ? mProducts[0] : null;
@@ -1778,7 +2017,10 @@ function deleteReview(id) {
   showBusinessSub('myStore');
 }
 
-// ========== 论坛 ==========
+
+// ========== 论坛分区 ==========
+const forumCategories = ['交易交流', '经验分享', '二手闲置', '校园/社区动态'];
+
 function showForumSub(sub) {
   document.querySelectorAll('#forumView .sub-btn').forEach(b => b.classList.remove('active'));
   if (event && event.target) event.target.classList.add('active');
@@ -1795,49 +2037,83 @@ function showForumSub(sub) {
           <label>论坛简介</label>
           <textarea id="forumDesc" placeholder="介绍一下这个论坛"></textarea>
         </div>
+        <div class="form-group">
+          <label>所属分区</label>
+          <select id="forumCategory">
+            ${forumCategories.map(cat => '<option value="'+cat+'">'+cat+'</option>').join('')}
+          </select>
+        </div>
         <button class="submit-btn" onclick="createForum()">创建论坛</button>
       </div>`;
   } else {
     let html = '<div class="page-title">论坛列表</div>';
-    if (forums.length === 0) {
-      html += '<div class="empty-state"><div class="empty-icon">&#128172;</div><div class="empty-text">暂无论坛</div></div>';
-    } else {
-      html += '<div class="content-list">';
-      forums.forEach((f, i) => {
-        const fPosts = forumPosts.filter(p => p.forumId === f.id);
-        html += `
-          <div class="content-card">
-            <div class="card-body">
-              <div class="card-title">${esc(f.name)}</div>
-              <div class="card-desc">${esc(f.description)}</div>
-              <div class="card-meta">${fPosts.length} 条帖子 | 创建于 ${f.time}</div>
-            </div>
-            <button class="revoke-btn" onclick="openForumPosts(${f.id})" style="background:#2e7d32;">进入</button>
-            <button class="revoke-btn" onclick="deleteForum(${i})">解散</button>
-          </div>`;
-      });
-      html += '</div>';
-    }
+    // 分区标签
+    html += '<div class="forum-category-tabs">';
+    html += '<button class="forum-cat-tab active" onclick="filterForumByCat(\'全部\',this)">全部</button>';
+    forumCategories.forEach(cat => {
+      html += '<button class="forum-cat-tab" onclick="filterForumByCat(\''+cat+'\',this)">'+cat+'</button>';
+    });
+    html += '</div><div id="forumListContainer">';
+    html += buildForumList('全部');
+    html += '</div>';
     c.innerHTML = html;
   }
 }
+
+function buildForumList(category) {
+  let list = forums;
+  if (category !== '全部') {
+    list = forums.filter(f => f.category === category);
+  }
+  if (list.length === 0) {
+    return '<div class="empty-state"><div class="empty-icon">\&#128172;</div><div class="empty-text">该分区暂无论坛</div></div>';
+  }
+  let html = '<div class="content-list">';
+  list.forEach((f) => {
+    const fPosts = forumPosts.filter(p => p.forumId === f.id);
+    const lastReply = fPosts.length > 0 ? fPosts[fPosts.length-1].time : f.time;
+    html += `
+      <div class="content-card">
+        <div class="card-body">
+          <div class="card-title">${esc(f.name)}</div>
+          <div class="card-desc">${esc(f.description)}</div>
+          <div class="card-meta">${fPosts.length} 条帖子 | 最新回复：${lastReply}${f.category ? ' | 分区：'+esc(f.category) : ''}</div>
+        </div>
+        <button class="revoke-btn" onclick="openForumPosts(${f.id})" style="background:#2e7d32;">进入</button>
+        <button class="revoke-btn" onclick="deleteForum(${f.id})">解散</button>
+      </div>`;
+  });
+  html += '</div>';
+  return html;
+}
+
+function filterForumByCat(cat, btn) {
+  document.querySelectorAll('.forum-cat-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('forumListContainer').innerHTML = buildForumList(cat);
+}
+
 function createForum() {
   const name = document.getElementById('forumName').value.trim();
   const desc = document.getElementById('forumDesc').value.trim();
+  const category = document.getElementById('forumCategory').value;
   if (!name) { showAlert('请输入论坛名称'); return; }
-  forums.push({ id: Date.now(), name, description: desc, time: new Date().toLocaleString() });
+  forums.push({ id: Date.now(), name, description: desc, category, time: new Date().toLocaleString() });
   saveToStorage(); updateStats();
   showNotification('论坛创建成功');
   showForumSub('list');
 }
-function deleteForum(i) {
+
+function deleteForum(id) {
   if (!confirm('确定解散该论坛？')) return;
-  const fid = forums[i].id;
-  forums.splice(i, 1);
-  forumPosts = forumPosts.filter(p => p.forumId !== fid);
+  forums = forums.filter(f => f.id !== id);
+  forumPosts = forumPosts.filter(p => p.forumId !== id);
   saveToStorage(); updateStats();
-  showForumSub('list');
+  const activeTab = document.querySelector('.forum-cat-tab.active');
+  const cat = activeTab ? activeTab.textContent : '全部';
+  document.getElementById('forumListContainer').innerHTML = buildForumList(cat);
 }
+
 function openForumPosts(forumId) {
   const forum = forums.find(f => f.id === forumId);
   const fPosts = forumPosts.filter(p => p.forumId === forumId);
@@ -1845,15 +2121,38 @@ function openForumPosts(forumId) {
   let html = `<div class="page-title">${esc(forum.name)}</div>`;
   html += `<button class="submit-btn" style="margin-bottom:20px;padding:10px 24px;font-size:14px;" onclick="postInForum(${forumId})">发帖</button>`;
   if (fPosts.length === 0) {
-    html += '<div class="empty-state"><div class="empty-icon">&#128172;</div><div class="empty-text">暂无帖子，来发第一帖吧</div></div>';
+    html += '<div class="empty-state"><div class="empty-icon">\&#128172;</div><div class="empty-text">暂无帖子，来发第一帖吧</div></div>';
   } else {
     html += '<div class="content-list">';
-    fPosts.forEach(p => {
+    fPosts.forEach((p, idx) => {
+      const replies = forumReplies.filter(r => r.postId === p.id);
+      const isLiked = p.likes && p.likes.includes(getCurrentUserName());
+      const isFaved = p.favorites && p.favorites.includes(getCurrentUserName());
       html += `
-        <div class="content-card">
-          <div class="card-body">
-            <div class="card-title">${esc(p.content)}</div>
-            <div class="card-meta">匿名用户 | 发布于 ${p.time}</div>
+        <div class="forum-post-card" id="post-${p.id}">
+          <div class="forum-post-header">
+            <div class="forum-post-avatar">${getAvatarHtml(p.authorAvatar)}</div>
+            <div>
+              <div class="forum-post-author">${esc(p.authorName || '匿名用户')}</div>
+              <div class="forum-post-time">发布于 ${p.time}</div>
+            </div>
+          </div>
+          <div class="forum-post-content">${esc(p.content)}</div>
+          <div class="forum-post-actions">
+            <button class="forum-action-btn ${isLiked?'liked':''}" onclick="toggleForumLike(${p.id},this)">
+              \&#10084; ${p.likeCount || 0}
+            </button>
+            <button class="forum-action-btn ${isFaved?'faved':''}" onclick="toggleForumFavorite(${p.id},this)">
+              \&#9733; ${p.favCount || 0}
+            </button>
+            <span class="forum-reply-count">${replies.length} 条回复</span>
+          </div>
+          <div class="reply-section">
+            ${buildReplies(replies, p.id)}
+            <div class="reply-input-area">
+              <input type="text" placeholder="回复楼主...使用 @用户名 可提及某人" onkeydown="if(event.key==='Enter')submitReply(${p.id},this)">
+              <button onclick="submitReply(${p.id},this.previousElementSibling)">回复</button>
+            </div>
           </div>
         </div>`;
     });
@@ -1861,15 +2160,92 @@ function openForumPosts(forumId) {
   }
   c.innerHTML = html;
 }
+
+function buildReplies(replies, postId) {
+  if (replies.length === 0) return '';
+  let html = '';
+  replies.forEach((r, i) => {
+    const mentioned = r.mention ? '<span class="reply-mention">@'+esc(r.mention)+'</span> ' : '';
+    html += `
+      <div class="reply-item">
+        <div class="reply-avatar">${getAvatarHtml(r.authorAvatar)}</div>
+        <div class="reply-body">
+          <div class="reply-author"><span class="reply-floor">#${i+1}楼</span>${esc(r.authorName || '匿名')}</div>
+          <div class="reply-content">${mentioned}${esc(r.content)}</div>
+          <div class="reply-time">${r.time}</div>
+        </div>
+      </div>`;
+  });
+  return html;
+}
+
+function submitReply(postId, inputEl) {
+  const text = inputEl.value.trim();
+  if (!text) return;
+  // Extract @mention
+  let mention = '';
+  const match = text.match(/@(\S+)/);
+  if (match) mention = match[1];
+  const post = forumPosts.find(p => p.id === postId);
+  forumReplies.push({
+    id: Date.now(), postId, forumId: post.forumId,
+    authorName: getCurrentUserName(), authorAvatar: userAvatar,
+    content: text, mention, time: new Date().toLocaleString()
+  });
+  saveToStorage();
+  // Notify post author
+  if (mention && mention !== getCurrentUserName()) {
+    showNotification('已回复，@'+mention+' 将收到提醒');
+  }
+  openForumPosts(post.forumId);
+}
+
+function toggleForumLike(postId, btnEl) {
+  const post = forumPosts.find(p => p.id === postId);
+  if (!post.likes) post.likes = [];
+  const user = getCurrentUserName();
+  const idx = post.likes.indexOf(user);
+  if (idx > -1) { post.likes.splice(idx, 1); post.likeCount = (post.likeCount||0)-1; }
+  else { post.likes.push(user); post.likeCount = (post.likeCount||0)+1; }
+  saveToStorage();
+  btnEl.classList.toggle('liked');
+  btnEl.innerHTML = '\&#10084; '+ (post.likeCount||0);
+}
+
+function toggleForumFavorite(postId, btnEl) {
+  const post = forumPosts.find(p => p.id === postId);
+  if (!post.favorites) post.favorites = [];
+  const user = getCurrentUserName();
+  const idx = post.favorites.indexOf(user);
+  if (idx > -1) { post.favorites.splice(idx, 1); post.favCount = (post.favCount||0)-1; }
+  else { post.favorites.push(user); post.favCount = (post.favCount||0)+1; }
+  saveToStorage();
+  btnEl.classList.toggle('faved');
+  btnEl.innerHTML = '\&#9733; '+ (post.favCount||0);
+}
+
 function postInForum(forumId) {
   const content = prompt('请输入帖子内容：');
   if (!content || !content.trim()) return;
-  forumPosts.push({ id: Date.now(), forumId, content: content.trim(), time: new Date().toLocaleString() });
+  forumPosts.push({
+    id: Date.now(), forumId, content: content.trim(),
+    authorName: getCurrentUserName(), authorAvatar: userAvatar,
+    time: new Date().toLocaleString(), likeCount: 0, favCount: 0,
+    likes: [], favorites: []
+  });
   saveToStorage();
   showNotification('发帖成功');
   openForumPosts(forumId);
 }
 
+function getCurrentUserName() {
+  return myStore ? myStore.name : (userIdentity === 'buyer' ? '买家用户' : '匿名用户');
+}
+
+function getAvatarHtml(avatar) {
+  if (avatar) return '<img src="'+avatar+'">';
+  return '<div style="font-size:13px;color:#c62828;">?</div>';
+}
 // ========== 个人主页 ==========
 function showProfileSub(sub) {
   document.querySelectorAll('#profileSidebar .sub-btn').forEach(b => b.classList.remove('active'));
@@ -1949,7 +2325,7 @@ function showProfileSub(sub) {
     // 重新渲染商店标签
     const storeProducts = publishedProducts.filter(p => p.sellerName === myStore.name);
     const storeReviews = reviews.filter(r => r.targetName === myStore.name);
-    const avgRating = storeReviews.length ? (storeReviews.reduce((s,r)=>s+r.rating,0)/storeReviews.length).toFixed(1) : '暂无';
+    const avgRating = storeReviews.length ? (storeReviews.reduce((s,r)=> s+r.rating, 0)/storeReviews.length).toFixed(1) : '暂无';
     let stars = '';
     for (let i=1;i<=5;i++) stars += i <= Math.round(avgRating) ? '&#9733;' : '&#9734;';
     c.innerHTML += `
@@ -1972,7 +2348,7 @@ function showProfileStoreTab(e, tab) {
   e.target.classList.add('active');
   const storeProducts = publishedProducts.filter(p => p.sellerName === myStore.name);
   const storeReviews = reviews.filter(r => r.targetName === myStore.name);
-  const avgRating = storeReviews.length ? (storeReviews.reduce((s,r)=>s+r.rating,0)/storeReviews.length).toFixed(1) : '暂无';
+  const avgRating = storeReviews.length ? (storeReviews.reduce((s,r)=> s+r.rating, 0)/storeReviews.length).toFixed(1) : '暂无';
   let stars = '';
   for (let i=1;i<=5;i++) stars += i <= Math.round(avgRating) ? '&#9733;' : '&#9734;';
   showProfileStoreTabContent(tab, storeProducts, storeReviews, avgRating, stars);
@@ -1983,7 +2359,6 @@ function showProfileStoreTabContent(tab, storeProducts, storeReviews, avgRating,
     if (storeProducts.length === 0) { c.innerHTML = '<div class="empty-state"><div class="empty-icon">&#128722;</div><div class="empty-text">暂无在售商品</div></div>'; return; }
     let html = '<div class="content-list">';
     storeProducts.forEach(p => {
-      const idx = publishedProducts.findIndex(prod => prod === p);
       html += `
         <div class="product-card">
           <img class="product-img" src="${p.image}">
@@ -1994,7 +2369,7 @@ function showProfileStoreTabContent(tab, storeProducts, storeReviews, avgRating,
             <span class="product-category">${esc(p.category)}</span>
             <div class="product-meta">发布于 ${p.time}</div>
           </div>
-          <button class="revoke-btn" onclick="revokeProduct(${idx})">撤销</button>
+          <button class="revoke-btn" onclick="revokeProduct(${p.id})">撤销</button>
         </div>`;
     });
     html += '</div>';
