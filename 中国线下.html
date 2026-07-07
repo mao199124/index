@@ -1,0 +1,2135 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>China Offline 中国线下</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Microsoft YaHei", "PingFang SC", "Helvetica Neue", sans-serif;
+    background: #f5f5f5;
+    color: #333;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  /* ========== 顶部栏 ========== */
+  .top-bar {
+    height: 60px;
+    background: linear-gradient(135deg, #c62828, #b71c1c);
+    display: flex;
+    align-items: center;
+    padding: 0 28px;
+    box-shadow: 0 2px 12px rgba(198,40,40,0.3);
+    position: relative;
+    z-index: 100;
+  }
+  .top-bar .logo-area {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 220px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .top-bar .logo-area .en-name {
+    font-size: 11px;
+    color: rgba(255,255,255,0.65);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-weight: 300;
+  }
+  .top-bar .logo-area .cn-name {
+    font-size: 24px;
+    color: #fff;
+    font-weight: 800;
+    letter-spacing: 4px;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  }
+  .search-bar {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    padding: 0 48px;
+  }
+  .search-bar .search-input-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+    display: flex;
+    align-items: center;
+    background: rgba(255,255,255,0.95);
+    border-radius: 19px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    transition: all 0.3s;
+    overflow: hidden;
+  }
+  .search-bar .search-input-wrapper:focus-within {
+    box-shadow: 0 0 0 3px rgba(255,255,255,0.45);
+    background: #fff;
+  }
+  .search-category-select {
+    appearance: none; -webkit-appearance: none;
+    border: none; outline: none;
+    background: #fce4e4;
+    color: #c62828;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 0 24px 0 16px;
+    height: 38px;
+    cursor: pointer;
+    border-right: 1px solid #f0c0c0;
+    flex-shrink: 0;
+    min-width: 110px;
+    text-align: center;
+  }
+  .search-category-wrapper { position: relative; flex-shrink: 0; }
+  .search-category-wrapper::after {
+    content: '\25BC'; position: absolute; right: 8px; top: 50%;
+    transform: translateY(-50%); font-size: 10px; color: #c62828;
+    pointer-events: none;
+  }
+  .search-bar input {
+    flex: 1; height: 38px; border: none;
+    padding: 0 48px 0 16px; font-size: 14px; outline: none; background: transparent;
+  }
+  .search-bar button {
+    position: absolute; right: 3px; top: 3px;
+    width: 32px; height: 32px;
+    border: none; border-radius: 50%;
+    background: #c62828; color: #fff; cursor: pointer;
+    font-size: 15px;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+  }
+  .search-bar button:hover { background: #a51e1e; transform: scale(1.06); }
+  .top-right {
+    display: flex; align-items: center; gap: 16px;
+    min-width: 200px; justify-content: flex-end;
+  }
+  .top-avatar {
+    width: 38px; height: 38px; border-radius: 50%;
+    background: #fff; border: 2px solid rgba(255,255,255,0.65);
+    cursor: pointer; overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.3s; box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+  .top-avatar:hover { border-color: #ff8a80; transform: scale(1.05); }
+  .top-avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .top-avatar .avatar-placeholder { font-size: 17px; color: #c62828; font-weight: 700; }
+  .top-nav-link {
+    color: rgba(255,255,255,0.85); font-size: 13px; cursor: pointer;
+    padding: 6px 14px; border-radius: 6px; transition: all 0.25s; user-select: none;
+    font-weight: 500;
+  }
+  .top-nav-link:hover { background: rgba(255,255,255,0.15); color: #fff; }
+  .identity-badge {
+    padding: 3px 10px; border-radius: 10px; font-size: 11px;
+    font-weight: 600; margin-left: 4px;
+  }
+  .identity-badge.seller { background: #fff3e0; color: #e65100; }
+  .identity-badge.buyer { background: #e8f5e9; color: #2e7d32; }
+  .identity-badge.user { background: #e3f2fd; color: #1565c0; }
+
+  /* ========== 主体布局 ========== */
+  .main-container { display: flex; height: calc(100vh - 60px); }
+
+  /* ========== 侧边栏 ========== */
+  .sidebar {
+    width: 230px; min-width: 230px;
+    background: #fff; border-right: 1px solid #e8e8e8;
+    display: flex; flex-direction: column; padding: 12px 0;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.04);
+  }
+  .sidebar .nav-item {
+    padding: 14px 28px; font-size: 15px; color: #555; cursor: pointer;
+    display: flex; align-items: center; gap: 12px;
+    transition: all 0.25s; border-left: 3px solid transparent;
+    user-select: none; position: relative; font-weight: 500;
+  }
+  .sidebar .nav-item::before {
+    content: ''; position: absolute; left: 0; top: 50%;
+    transform: translateY(-50%); width: 3px; height: 0;
+    background: #c62828; border-radius: 0 3px 3px 0; transition: height 0.25s;
+  }
+  .sidebar .nav-item:hover { background: #fce4e4; color: #c62828; }
+  .sidebar .nav-item:hover::before { height: 55%; }
+  .sidebar .nav-item.active { background: #fce4e4; color: #c62828; font-weight: 600; }
+  .sidebar .nav-item.active::before { height: 65%; }
+  .sidebar .nav-icon { font-size: 18px; width: 22px; text-align: center; }
+  .sidebar .nav-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #e8e8e8, transparent);
+    margin: 8px 20px;
+  }
+
+  /* ========== 内容区域 ========== */
+  .content-area { flex: 1; overflow-y: auto; padding: 32px; background: #f5f5f5; }
+
+  /* ========== 首页视图 ========== */
+  .home-view { display: flex; flex-direction: column; align-items: center; }
+  .banner-area {
+    width: 100%; max-width: 960px; height: 380px;
+    border-radius: 16px; overflow: hidden; position: relative;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.12); cursor: default; user-select: none;
+  }
+  .banner-area svg { width: 100%; height: 100%; display: block; }
+  .banner-overlay {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    padding: 44px 40px 32px;
+    background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+    color: #fff;
+  }
+  .banner-overlay .banner-en-name {
+    font-size: 14px; font-weight: 400; letter-spacing: 6px;
+    color: rgba(255,255,255,0.55); margin-bottom: 6px;
+    text-transform: uppercase; font-family: "Georgia", serif;
+  }
+  .banner-overlay .banner-title {
+    font-size: 36px; font-weight: 900; margin-bottom: 10px;
+    text-shadow: 0 2px 12px rgba(0,0,0,0.4); letter-spacing: 6px;
+    filter: url(#glow);
+  }
+  .banner-overlay .banner-subtitle {
+    font-size: 15px; color: rgba(255,255,255,0.85); letter-spacing: 3px;
+    font-weight: 300;
+  }
+  .banner-badge {
+    position: absolute; top: 20px; left: 28px;
+    background: #c62828; color: #fff; padding: 6px 20px;
+    border-radius: 20px; font-size: 12px; font-weight: 600;
+    letter-spacing: 1px; box-shadow: 0 2px 10px rgba(198,40,40,0.45);
+  }
+  .home-stats {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;
+    width: 100%; max-width: 960px; margin-top: 24px;
+  }
+  .stat-card {
+    background: #fff; border-radius: 14px; padding: 26px 20px;
+    text-align: center; box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    transition: all 0.3s; border-top: 3px solid #c62828;
+  }
+  .stat-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
+  .stat-card .stat-num { font-size: 28px; font-weight: 800; color: #c62828; }
+  .stat-card .stat-label { font-size: 13px; color: #999; margin-top: 6px; font-weight: 500; }
+
+  /* ========== 管理页面通用 ========== */
+  .manage-view, .business-view, .forum-view, .profile-view {
+    display: none; height: 100%;
+  }
+  .manage-view.active, .business-view.active, .forum-view.active, .profile-view.active {
+    display: flex;
+  }
+  .sub-sidebar {
+    width: 220px; min-width: 220px;
+    background: #fff; border-right: 1px solid #e8e8e8;
+    padding: 24px 16px; display: flex; flex-direction: column; gap: 8px;
+  }
+  .sub-sidebar .section-title {
+    font-size: 11px; color: #bbb; text-transform: uppercase;
+    letter-spacing: 2px; margin-bottom: 8px; padding: 0 12px;
+  }
+  .sub-btn {
+    padding: 10px 16px; border: 1px solid #e8e8e8; background: #fff;
+    border-radius: 10px; cursor: pointer; font-size: 14px; color: #555;
+    transition: all 0.25s; text-align: left; font-weight: 500;
+  }
+  .sub-btn:hover { border-color: #c62828; color: #c62828; background: #fce4e4; }
+  .sub-btn.active {
+    background: #c62828; color: #fff; border-color: #c62828;
+    box-shadow: 0 4px 12px rgba(198,40,40,0.3);
+  }
+  .manage-content { flex: 1; padding: 28px 36px; overflow-y: auto; }
+  .manage-content .page-title {
+    font-size: 22px; color: #c62828; margin-bottom: 24px;
+    padding-bottom: 14px; border-bottom: 2px solid #fce4e4; font-weight: 700;
+  }
+
+  /* ========== 发布表单 ========== */
+  .publish-form {
+    background: #fff; border-radius: 16px; padding: 32px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06); max-width: 680px;
+  }
+  .publish-form .form-group { margin-bottom: 22px; }
+  .publish-form label {
+    display: block; font-size: 14px; color: #444; margin-bottom: 8px; font-weight: 600;
+  }
+  .publish-form input[type="text"],
+  .publish-form textarea,
+  .publish-form input[type="number"],
+  .publish-form select {
+    width: 100%; padding: 12px 16px; border: 1.5px solid #e0e0e0;
+    border-radius: 10px; font-size: 14px; outline: none;
+    transition: all 0.3s; background: #fafafa;
+  }
+  .publish-form select { appearance: auto; cursor: pointer; }
+  .publish-form input:focus, .publish-form textarea:focus, .publish-form select:focus {
+    border-color: #c62828; background: #fff; box-shadow: 0 0 0 3px rgba(198,40,40,0.1);
+  }
+  .publish-form textarea { resize: vertical; min-height: 110px; }
+  .publish-form .submit-btn {
+    padding: 12px 40px; background: #c62828; color: #fff; border: none;
+    border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer;
+    transition: all 0.3s; box-shadow: 0 4px 12px rgba(198,40,40,0.3);
+  }
+  .publish-form .submit-btn:hover { background: #a51e1e; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(198,40,40,0.4); }
+  .publish-form .submit-btn:active { transform: translateY(0); }
+  .preview-box {
+    width: 100%; min-height: 130px; border: 2px dashed #ddd;
+    border-radius: 12px; display: flex; align-items: center; justify-content: center;
+    margin-top: 8px; overflow: hidden; background: #fafafa; transition: border-color 0.3s;
+  }
+  .preview-box:hover { border-color: #c62828; }
+  .preview-box img { max-width: 100%; max-height: 220px; object-fit: contain; }
+  .preview-box .no-preview { color: #ccc; font-size: 14px; }
+
+  /* ========== 内容列表 ========== */
+  .content-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+  .content-card {
+    background: #fff; border-radius: 14px; overflow: hidden;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.06); transition: all 0.35s; position: relative;
+  }
+  .content-card:hover { transform: translateY(-6px); box-shadow: 0 12px 32px rgba(0,0,0,0.12); }
+  .content-card .card-img {
+    width: 100%; height: 190px; object-fit: cover;
+    background: linear-gradient(135deg, #f5f5f5, #e8e8e8);
+  }
+  .content-card .card-body { padding: 18px; }
+  .content-card .card-title {
+    font-size: 17px; font-weight: 700; color: #222; margin-bottom: 8px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .content-card .card-desc { font-size: 13px; color: #888; line-height: 1.7; }
+  .content-card .card-meta {
+    font-size: 12px; color: #bbb; margin-top: 14px;
+    padding-top: 12px; border-top: 1px solid #f0f0f0;
+  }
+  .revoke-btn {
+    position: absolute; top: 14px; right: 14px;
+    padding: 5px 14px; background: #c62828; color: #fff; border: none;
+    border-radius: 8px; font-size: 12px; cursor: pointer;
+    transition: all 0.3s; font-weight: 500; box-shadow: 0 2px 8px rgba(198,40,40,0.35);
+  }
+  .revoke-btn:hover { background: #a51e1e; transform: scale(1.05); }
+
+  /* ========== 商品卡片 ========== */
+  .product-card {
+    background: #fff; border-radius: 14px; overflow: hidden;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.06); transition: all 0.35s; position: relative;
+  }
+  .product-card:hover { transform: translateY(-6px); box-shadow: 0 12px 32px rgba(0,0,0,0.12); }
+  .product-card .product-img {
+    width: 100%; height: 190px; object-fit: cover;
+    background: linear-gradient(135deg, #f5f5f5, #e8e8e8);
+  }
+  .product-card .product-body { padding: 18px; }
+  .product-card .product-title {
+    font-size: 17px; font-weight: 700; color: #222; margin-bottom: 6px;
+  }
+  .product-card .product-price {
+    font-size: 20px; font-weight: 800;
+    background: linear-gradient(90deg, #c62828, #e53935);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    margin-bottom: 6px;
+  }
+  .product-card .product-stock { font-size: 12px; color: #888; margin-bottom: 4px; }
+  .product-card .product-category {
+    display: inline-block; padding: 2px 10px; background: #fce4e4;
+    color: #c62828; border-radius: 10px; font-size: 11px; font-weight: 600;
+  }
+  .product-card .product-seller {
+    font-size: 12px; color: #999; margin-top: 8px;
+  }
+  .product-card .product-meta {
+    font-size: 12px; color: #bbb; margin-top: 12px;
+    padding-top: 10px; border-top: 1px solid #f0f0f0;
+  }
+  .action-btn {
+    position: absolute; top: 14px; right: 14px;
+    padding: 6px 16px; color: #fff; border: none;
+    border-radius: 8px; font-size: 12px; cursor: pointer;
+    transition: all 0.3s; font-weight: 500;
+  }
+  .buy-btn { background: #c62828; box-shadow: 0 2px 8px rgba(198,40,40,0.35); }
+  .buy-btn:hover { background: #a51e1e; transform: scale(1.05); }
+
+  /* ========== 商家卡片 ========== */
+  .merchant-card {
+    background: #fff; border-radius: 14px; padding: 24px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.06); transition: all 0.35s;
+    display: flex; align-items: center; gap: 20px; cursor: pointer;
+  }
+  .merchant-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,0.12); }
+  .merchant-avatar {
+    width: 64px; height: 64px; border-radius: 50%; overflow: hidden;
+    flex-shrink: 0; border: 3px solid #c62828;
+    display: flex; align-items: center; justify-content: center;
+    background: #fce4e4;
+  }
+  .merchant-avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .merchant-info { flex: 1; }
+  .merchant-info .merchant-name { font-size: 18px; font-weight: 700; color: #222; }
+  .merchant-info .merchant-tag { font-size: 13px; color: #888; margin-top: 4px; }
+  .merchant-rating { display: flex; align-items: center; gap: 6px; margin-top: 6px; }
+  .merchant-rating .stars { color: #ffc107; font-size: 14px; letter-spacing: 2px; }
+  .merchant-rating .rating-num { font-size: 14px; font-weight: 700; color: #c62828; }
+  .merchant-rating .rating-count { font-size: 12px; color: #999; }
+  .merchant-products-count { font-size: 12px; color: #999; margin-top: 4px; }
+
+  /* ========== 弹窗通用 ========== */
+  .modal-overlay {
+    display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.55); z-index: 1000;
+    align-items: center; justify-content: center;
+    backdrop-filter: blur(4px);
+  }
+  .modal-overlay.active { display: flex; }
+  .modal-box {
+    background: #fff; border-radius: 20px; padding: 36px;
+    max-width: 520px; width: 90%; max-height: 85vh; overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+    animation: modalIn 0.3s ease;
+    position: relative;
+  }
+  @keyframes modalIn { from { opacity: 0; transform: scale(0.92); } to { opacity: 1; transform: scale(1); } }
+  .modal-box .modal-title {
+    font-size: 20px; font-weight: 700; color: #c62828;
+    margin-bottom: 24px; padding-bottom: 14px; border-bottom: 2px solid #fce4e4;
+  }
+  .modal-box .close-btn {
+    position: absolute; top: 16px; right: 20px;
+    width: 32px; height: 32px; border: none; background: #f5f5f5;
+    border-radius: 50%; font-size: 18px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.3s; color: #666;
+  }
+  .modal-box .close-btn:hover { background: #c62828; color: #fff; }
+  .modal-form .form-group { margin-bottom: 18px; }
+  .modal-form label { display: block; font-size: 13px; color: #555; margin-bottom: 6px; font-weight: 600; }
+  .modal-form input, .modal-form textarea, .modal-form select {
+    width: 100%; padding: 10px 14px; border: 1.5px solid #e0e0e0;
+    border-radius: 10px; font-size: 14px; outline: none; transition: all 0.3s;
+  }
+  .modal-form input:focus, .modal-form textarea:focus, .modal-form select:focus {
+    border-color: #c62828; box-shadow: 0 0 0 3px rgba(198,40,40,0.1);
+  }
+  .modal-form textarea { resize: vertical; min-height: 80px; }
+  .modal-form .submit-btn {
+    width: 100%; padding: 12px; background: #c62828; color: #fff;
+    border: none; border-radius: 10px; font-size: 15px; font-weight: 600;
+    cursor: pointer; transition: all 0.3s; margin-top: 8px;
+    box-shadow: 0 4px 12px rgba(198,40,40,0.3);
+  }
+  .modal-form .submit-btn:hover { background: #a51e1e; transform: translateY(-2px); }
+
+  /* ========== 星级评分 ========== */
+  .star-rating { display: flex; gap: 6px; font-size: 28px; cursor: pointer; user-select: none; }
+  .star-rating .star { color: #ddd; transition: color 0.2s; }
+  .star-rating .star.active { color: #ffc107; }
+  .star-rating .star:hover { color: #ffc107; }
+
+  /* ========== 评价列表 ========== */
+  .review-item {
+    padding: 16px; border-bottom: 1px solid #f0f0f0;
+    display: flex; gap: 14px;
+  }
+  .review-item:last-child { border-bottom: none; }
+  .review-avatar {
+    width: 42px; height: 42px; border-radius: 50%; overflow: hidden;
+    flex-shrink: 0; background: #fce4e4;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .review-avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .review-body { flex: 1; }
+  .review-body .review-name { font-size: 14px; font-weight: 600; color: #333; }
+  .review-body .review-stars { color: #ffc107; font-size: 13px; letter-spacing: 1px; margin: 4px 0; }
+  .review-body .review-text { font-size: 13px; color: #666; line-height: 1.6; }
+  .review-body .review-time { font-size: 11px; color: #bbb; margin-top: 4px; }
+  .delete-review-btn {
+    padding: 4px 10px; background: #f5f5f5; border: none; border-radius: 6px;
+    font-size: 11px; color: #999; cursor: pointer; transition: all 0.3s;
+    align-self: flex-start;
+  }
+  .delete-review-btn:hover { background: #c62828; color: #fff; }
+
+  /* ========== 通知 ========== */
+  .notification-area {
+    position: fixed; top: 76px; right: 24px; z-index: 2000;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .notification-toast {
+    background: #fff; border-radius: 12px; padding: 14px 20px;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.15); font-size: 13px;
+    color: #333; max-width: 340px; animation: toastIn 0.3s ease;
+    border-left: 4px solid #c62828;
+  }
+  @keyframes toastIn { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
+
+  /* ========== 身份选择弹窗 ========== */
+  .identity-modal .identity-options { display: flex; gap: 16px; margin-top: 12px; }
+  .identity-option {
+    flex: 1; padding: 24px 16px; border: 2px solid #e0e0e0;
+    border-radius: 14px; text-align: center; cursor: pointer;
+    transition: all 0.3s;
+  }
+  .identity-option:hover { border-color: #c62828; transform: translateY(-4px); box-shadow: 0 8px 24px rgba(198,40,40,0.15); }
+  .identity-option.selected { border-color: #c62828; background: #fce4e4; }
+  .identity-option .option-icon { font-size: 36px; margin-bottom: 10px; }
+  .identity-option .option-title { font-size: 16px; font-weight: 700; color: #222; margin-bottom: 6px; }
+  .identity-option .option-desc { font-size: 12px; color: #999; line-height: 1.6; }
+
+  /* ========== 商店信息区 ========== */
+  .store-header {
+    background: linear-gradient(135deg, #c62828, #b71c1c);
+    border-radius: 16px; padding: 28px; color: #fff;
+    margin-bottom: 24px; display: flex; align-items: center; gap: 24px;
+    box-shadow: 0 6px 24px rgba(198,40,40,0.3);
+  }
+  .store-header .store-avatar {
+    width: 72px; height: 72px; border-radius: 50%; overflow: hidden;
+    border: 3px solid rgba(255,255,255,0.5); flex-shrink: 0;
+    background: #fff; display: flex; align-items: center; justify-content: center;
+  }
+  .store-header .store-avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .store-header .store-name { font-size: 22px; font-weight: 800; }
+  .store-header .store-desc { font-size: 13px; color: rgba(255,255,255,0.85); margin-top: 4px; }
+  .store-header .store-meta { font-size: 12px; color: rgba(255,255,255,0.7); margin-top: 8px; display: flex; gap: 16px; }
+  .store-stats {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px;
+  }
+  .store-stat-card {
+    background: #fff; border-radius: 12px; padding: 20px; text-align: center;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+  }
+  .store-stat-card .store-stat-num { font-size: 24px; font-weight: 800; color: #c62828; }
+  .store-stat-card .store-stat-label { font-size: 12px; color: #999; margin-top: 4px; }
+
+  /* ========== 分类筛选 ========== */
+  .category-filter { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+  .category-btn {
+    padding: 6px 18px; border: 1px solid #e0e0e0; background: #fff;
+    border-radius: 20px; cursor: pointer; font-size: 13px; color: #666;
+    transition: all 0.25s; font-weight: 500;
+  }
+  .category-btn:hover { border-color: #c62828; color: #c62828; }
+  .category-btn.active { background: #c62828; color: #fff; border-color: #c62828; }
+
+  /* ========== 请求卡片 ========== */
+  .request-card {
+    background: #fff; border-radius: 12px; padding: 18px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05); margin-bottom: 12px;
+    display: flex; align-items: center; gap: 16px;
+  }
+  .request-info { flex: 1; }
+  .request-info .request-product { font-size: 15px; font-weight: 600; color: #222; }
+  .request-info .request-detail { font-size: 12px; color: #888; margin-top: 4px; }
+  .request-actions { display: flex; gap: 8px; }
+  .accept-btn { padding: 6px 16px; background: #2e7d32; color: #fff; border: none; border-radius: 8px; font-size: 12px; cursor: pointer; transition: all 0.3s; font-weight: 500; }
+  .accept-btn:hover { background: #1b5e20; }
+  .reject-btn { padding: 6px 16px; background: #e0e0e0; color: #666; border: none; border-radius: 8px; font-size: 12px; cursor: pointer; transition: all 0.3s; font-weight: 500; }
+  .reject-btn:hover { background: #c62828; color: #fff; }
+  .request-status { padding: 4px 12px; border-radius: 6px; font-size: 11px; font-weight: 600; }
+  .request-status.accepted { background: #e8f5e9; color: #2e7d32; }
+  .request-status.rejected { background: #ffebee; color: #c62828; }
+  .request-status.pending { background: #fff3e0; color: #e65100; }
+
+  /* ========== 个人主页 ========== */
+  .profile-header {
+    background: linear-gradient(135deg, #c62828, #b71c1c);
+    border-radius: 16px; padding: 32px; color: #fff;
+    display: flex; align-items: center; gap: 24px; margin-bottom: 24px;
+    box-shadow: 0 6px 24px rgba(198,40,40,0.3);
+  }
+  .profile-header .profile-avatar-large {
+    width: 80px; height: 80px; border-radius: 50%; overflow: hidden;
+    border: 3px solid rgba(255,255,255,0.5); flex-shrink: 0;
+    background: #fff; display: flex; align-items: center; justify-content: center;
+  }
+  .profile-header .profile-avatar-large img { width: 100%; height: 100%; object-fit: cover; }
+  .profile-header .profile-name { font-size: 24px; font-weight: 800; }
+  .profile-header .profile-identity { font-size: 12px; color: rgba(255,255,255,0.8); margin-top: 4px; }
+  .profile-identity { margin-top: 8px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .identity-label {
+    font-size: 14px; font-weight: 600; color: #555;
+    background: #f5f5f5; border: 1px solid #e0e0e0;
+    padding: 5px 14px; border-radius: 20px; letter-spacing: 1px;
+  }
+  .identity-switch-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 7px 18px; font-size: 12px; font-weight: 600;
+    color: #fff; background: linear-gradient(135deg, #c62828, #d84315);
+    border: none; border-radius: 20px; cursor: pointer;
+    transition: all 0.3s; letter-spacing: 1px;
+    box-shadow: 0 3px 10px rgba(198,40,40,0.3);
+  }
+  .identity-switch-btn:hover {
+    background: linear-gradient(135deg, #a51e1e, #bf360c);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 16px rgba(198,40,40,0.45);
+  }
+  .identity-switch-btn:active { transform: translateY(0); }
+  .switch-icon { font-size: 14px; display: inline-block; transition: transform 0.3s; }
+  .identity-switch-btn:hover .switch-icon { transform: rotate(180deg); }
+  .profile-sidebar {
+    width: 220px; min-width: 220px; background: #fff; border-right: 1px solid #e8e8e8;
+    padding: 24px 16px; display: flex; flex-direction: column; gap: 8px;
+  }
+  .profile-content { flex: 1; padding: 28px 36px; overflow-y: auto; }
+  .profile-info-card {
+    background: #fff; border-radius: 14px; padding: 24px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05); margin-bottom: 20px;
+  }
+  .profile-info-card .info-row {
+    display: flex; align-items: center; gap: 12px; margin-bottom: 14px;
+    font-size: 14px;
+  }
+  .profile-info-card .info-label { color: #999; min-width: 60px; }
+  .profile-info-card .info-value { color: #333; font-weight: 500; }
+  .profile-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+  .profile-tag {
+    padding: 4px 14px; background: #fce4e4; color: #c62828;
+    border-radius: 12px; font-size: 12px; font-weight: 600;
+  }
+  .album-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
+  .album-item {
+    position: relative; border-radius: 10px; overflow: hidden;
+    aspect-ratio: 1; background: #f5f5f5;
+  }
+  .album-item img { width: 100%; height: 100%; object-fit: cover; }
+  .album-item .delete-album-btn {
+    position: absolute; top: 6px; right: 6px; width: 24px; height: 24px;
+    background: rgba(198,40,40,0.85); color: #fff; border: none; border-radius: 50%;
+    font-size: 12px; cursor: pointer; display: none; align-items: center; justify-content: center;
+  }
+  .album-item:hover .delete-album-btn { display: flex; }
+
+  /* ========== 我的商店（个人主页内） ========== */
+  .my-store-tabs { display: flex; gap: 8px; margin-bottom: 20px; }
+  .my-store-tab {
+    padding: 8px 20px; border: 1px solid #e0e0e0; background: #fff;
+    border-radius: 10px; cursor: pointer; font-size: 13px; color: #666;
+    transition: all 0.25s; font-weight: 500;
+  }
+  .my-store-tab:hover { border-color: #c62828; color: #c62828; }
+  .my-store-tab.active { background: #c62828; color: #fff; border-color: #c62828; }
+
+  /* ========== 搜索结果 ========== */
+  .search-results {
+    position: absolute; top: 100%; left: 0; right: 0;
+    background: #fff; border-radius: 0 0 14px 14px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.12); z-index: 200;
+    max-height: 420px; overflow-y: auto; display: none;
+  }
+  .search-results.active { display: block; }
+  .search-result-item {
+    padding: 14px 20px; cursor: pointer; border-bottom: 1px solid #f5f5f5;
+    transition: background 0.2s; display: flex; align-items: center; gap: 12px;
+  }
+  .search-result-item:hover { background: #fce4e4; }
+  .search-result-item .result-type {
+    padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 600;
+  }
+  .search-result-item .result-type.info { background: #e3f2fd; color: #1565c0; }
+  .search-result-item .result-type.product { background: #fce4e4; color: #c62828; }
+  .search-result-item .result-type.merchant { background: #e8f5e9; color: #2e7d32; }
+  .search-result-item .result-type.forum { background: #fff3e0; color: #e65100; }
+  .search-result-item .result-text { font-size: 14px; color: #333; }
+  .search-result-item .result-text mark { background: #ffe082; padding: 0 2px; border-radius: 2px; }
+  .search-no-result { padding: 20px; text-align: center; color: #bbb; font-size: 13px; }
+
+  /* ========== 空状态 ========== */
+  .empty-state { text-align: center; padding: 60px 20px; color: #bbb; }
+  .empty-state .empty-icon { font-size: 48px; margin-bottom: 16px; }
+  .empty-state .empty-text { font-size: 15px; }
+
+  /* ========== 提示弹窗 ========== */
+  .alert-modal .alert-text { font-size: 14px; color: #555; line-height: 1.8; margin-bottom: 20px; }
+  .alert-modal .alert-btn {
+    width: 100%; padding: 12px; background: #c62828; color: #fff;
+    border: none; border-radius: 10px; font-size: 15px; font-weight: 600;
+    cursor: pointer; transition: all 0.3s;
+  }
+  .alert-modal .alert-btn:hover { background: #a51e1e; }
+
+  /* ========== 商家详情弹窗 ========== */
+  .merchant-detail-header {
+    display: flex; align-items: center; gap: 16px; margin-bottom: 20px;
+    padding-bottom: 16px; border-bottom: 1px solid #f0f0f0;
+  }
+  .merchant-detail-header .md-avatar {
+    width: 56px; height: 56px; border-radius: 50%; overflow: hidden;
+    border: 2px solid #c62828; flex-shrink: 0; background: #fce4e4;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .merchant-detail-header .md-avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .merchant-detail-header .md-name { font-size: 18px; font-weight: 700; color: #222; }
+  .merchant-detail-header .md-meta { font-size: 12px; color: #999; margin-top: 4px; }
+  .merchant-products-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px;
+    margin-top: 12px;
+  }
+  .merchant-product-thumb {
+    border-radius: 10px; overflow: hidden; background: #f5f5f5;
+    aspect-ratio: 1; position: relative;
+  }
+  .merchant-product-thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .merchant-product-thumb .mp-name {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    padding: 8px; background: rgba(0,0,0,0.6); color: #fff;
+    font-size: 11px; font-weight: 600;
+  }
+
+  /* ========== 购物买卖身份提示 ========== */
+  .role-notice {
+    background: #fff3e0; border: 1px solid #ffe0b2; border-radius: 12px;
+    padding: 16px 20px; margin-bottom: 20px; display: flex;
+    align-items: center; gap: 12px;
+  }
+  .role-notice .role-icon { font-size: 24px; }
+  .role-notice .role-text { font-size: 13px; color: #e65100; }
+  .role-notice .role-text strong { color: #c62828; }
+
+  /* ========== 我的请求 ========== */
+  .my-request-card {
+    background: #fff; border-radius: 12px; padding: 18px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05); margin-bottom: 12px;
+  }
+  .my-request-card .mr-header { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+  .my-request-card .mr-product { font-size: 15px; font-weight: 600; color: #222; }
+  .my-request-card .mr-detail { font-size: 12px; color: #888; line-height: 1.8; }
+  .my-request-card .mr-status { margin-top: 8px; }
+</style>
+</head>
+<body>
+
+<!-- ========== 顶部栏 ========== -->
+<div class="top-bar">
+  <div class="logo-area" onclick="showHome()">
+    <div>
+      <div class="en-name">CHINA OFFLINE</div>
+      <div class="cn-name">中国线下</div>
+    </div>
+  </div>
+  <div class="search-bar">
+    <div class="search-input-wrapper">
+      <div class="search-category-wrapper">
+        <select class="search-category-select" id="searchCategory">
+          <option value="all">全部</option>
+          <option value="info">信息交流</option>
+          <option value="product">商品</option>
+          <option value="merchant">商家</option>
+          <option value="forum">论坛</option>
+        </select>
+      </div>
+      <input type="text" id="searchInput" placeholder="搜索信息、商品、商家、论坛..." onkeydown="if(event.key==='Enter')doSearch()">
+      <button onclick="doSearch()">&#128269;</button>
+      <div class="search-results" id="searchResults"></div>
+    </div>
+  </div>
+  <div class="top-right">
+    <span class="top-nav-link" id="identityDisplay" style="display:none;">
+      <span id="identityBadge"></span>
+    </span>
+    <div class="top-avatar" onclick="showProfile()">
+      <div class="avatar-placeholder" id="topAvatarText">?</div>
+      <img id="topAvatarImg" style="display:none;">
+    </div>
+  </div>
+</div>
+
+<!-- ========== 主体 ========== -->
+<div class="main-container">
+  <!-- 侧边栏 -->
+  <div class="sidebar">
+    <div class="nav-item" data-page="home" onclick="showHome()">
+      <span class="nav-icon">&#9632;</span> 首页
+    </div>
+    <div class="nav-divider"></div>
+    <div class="nav-item" data-page="manage" onclick="showManage()">
+      <span class="nav-icon">&#9776;</span> 信息交流
+    </div>
+    <div class="nav-item" data-page="business" onclick="showBusiness()">
+      <span class="nav-icon">&#9733;</span> 购物买卖
+    </div>
+    <div class="nav-item" data-page="forum" onclick="showForum()">
+      <span class="nav-icon">&#9741;</span> 论坛交流
+    </div>
+  </div>
+
+  <!-- 内容区 -->
+  <div class="content-area" id="contentArea">
+    <!-- 首页 -->
+    <div class="home-view" id="homeView">
+      <div class="banner-area">
+        <svg viewBox="0 0 960 380" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#8b0000"/>
+              <stop offset="50%" style="stop-color:#c62828"/>
+              <stop offset="100%" style="stop-color:#8b0000"/>
+            </linearGradient>
+            <filter id="glow">
+              <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+              <feMerge>
+                <feMergeNode in="coloredBlur"/>
+                <feMergeNode in="SourceGraphic"/>
+              </feMerge>
+            </filter>
+          </defs>
+          <rect width="960" height="380" fill="url(#bg)"/>
+          <circle cx="120" cy="70" r="80" fill="rgba(255,255,255,0.04)"/>
+          <circle cx="840" cy="310" r="110" fill="rgba(255,255,255,0.03)"/>
+          <circle cx="480" cy="40" r="50" fill="rgba(255,255,255,0.04)"/>
+          <circle cx="750" cy="100" r="65" fill="rgba(255,255,255,0.025)"/>
+          <circle cx="300" cy="300" r="45" fill="rgba(255,255,255,0.03)"/>
+          <!-- 装饰线条 -->
+          <line x1="40" y1="190" x2="180" y2="190" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+          <line x1="780" y1="190" x2="920" y2="190" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+        </svg>
+        <div class="banner-badge">后台固定</div>
+        <div class="banner-overlay">
+          <div class="banner-en-name">China Offline</div>
+          <div class="banner-title">中国线下</div>
+          <div class="banner-subtitle">心系寰球，梦寄未来，论坛交流</div>
+        </div>
+      </div>
+      <div class="home-stats">
+        <div class="stat-card"><div class="stat-num" id="statInfo">0</div><div class="stat-label">信息总数</div></div>
+        <div class="stat-card"><div class="stat-num" id="statProducts">0</div><div class="stat-label">商品总数</div></div>
+        <div class="stat-card"><div class="stat-num" id="statForums">0</div><div class="stat-label">论坛总数</div></div>
+        <div class="stat-card"><div class="stat-num" id="statUsers">1</div><div class="stat-label">在线用户</div></div>
+      </div>
+    </div>
+
+    <!-- 信息交流 -->
+    <div class="manage-view" id="manageView">
+      <div class="sub-sidebar">
+        <div class="section-title">信息交流</div>
+        <button class="sub-btn" onclick="showManageSub('publish')">发布信息</button>
+        <button class="sub-btn" onclick="showManageSub('published')">已发布信息</button>
+      </div>
+      <div class="manage-content" id="manageContent"></div>
+    </div>
+
+    <!-- 购物买卖 -->
+    <div class="business-view" id="businessView">
+      <div class="sub-sidebar" id="businessSidebar">
+        <div class="section-title">购物买卖</div>
+        <button class="sub-btn" id="btnMyStore" onclick="showBusinessSub('myStore')" style="display:none;">我的商店</button>
+        <button class="sub-btn" id="btnPublishProduct" onclick="showBusinessSub('publishProduct')" style="display:none;">发布商品</button>
+        <button class="sub-btn" id="btnMyProducts" onclick="showBusinessSub('myProducts')" style="display:none;">已发布商品</button>
+        <button class="sub-btn" id="btnProductPlatform" onclick="showBusinessSub('productPlatform')">商品平台</button>
+        <button class="sub-btn" id="btnMerchants" onclick="showBusinessSub('merchants')">商家商户</button>
+        <button class="sub-btn" id="btnMyRequests" onclick="showBusinessSub('myRequests')" style="display:none;">我的请求</button>
+      </div>
+      <div class="manage-content" id="businessContent"></div>
+    </div>
+
+    <!-- 论坛交流 -->
+    <div class="forum-view" id="forumView">
+      <div class="sub-sidebar">
+        <div class="section-title">论坛交流</div>
+        <button class="sub-btn" onclick="showForumSub('create')">创建论坛</button>
+        <button class="sub-btn" onclick="showForumSub('list')">论坛列表</button>
+      </div>
+      <div class="manage-content" id="forumContent"></div>
+    </div>
+
+    <!-- 个人主页 -->
+    <div class="profile-view" id="profileView">
+      <div class="profile-sidebar" id="profileSidebar">
+        <div class="section-title">个人中心</div>
+        <button class="sub-btn" onclick="showProfileSub('info')">个人信息</button>
+        <button class="sub-btn" onclick="showProfileSub('album')">我的相册</button>
+        <button class="sub-btn" id="btnProfileStore" onclick="showProfileSub('myStore')" style="display:none;">我的商店</button>
+      </div>
+      <div class="profile-content" id="profileContent"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== 通知区域 ========== -->
+<div class="notification-area" id="notificationArea"></div>
+
+<!-- ========== 身份选择弹窗 ========== -->
+<div class="modal-overlay identity-modal" id="identityModal">
+  <div class="modal-box" style="max-width:620px;">
+    <div class="modal-title">选择你的身份</div>
+    <div class="alert-text" style="margin-bottom:16px;">进入购物买卖前，请先选择你的身份。选择后将记住，可在个人主页中切换。</div>
+    <div class="identity-options">
+      <div class="identity-option" id="optSeller" onclick="selectIdentityOption('seller')">
+        <div class="option-icon">&#9878;</div>
+        <div class="option-title">商家 / 卖家</div>
+        <div class="option-desc">建立商店、发布商品、管理购买请求、查看评价</div>
+      </div>
+      <div class="identity-option" id="optBuyer" onclick="selectIdentityOption('buyer')">
+        <div class="option-icon">&#128722;</div>
+        <div class="option-title">买家</div>
+        <div class="option-desc">浏览商品、请求购买、查看商家、评价与评分</div>
+      </div>
+      <div class="identity-option" id="optUser" onclick="selectIdentityOption('user')">
+        <div class="option-icon">&#128100;</div>
+        <div class="option-title">普通用户</div>
+        <div class="option-desc">浏览商品与商家、评价与评分（无需登录）</div>
+      </div>
+    </div>
+    <button class="submit-btn" style="margin-top:20px;" onclick="confirmIdentity()">确认选择</button>
+  </div>
+</div>
+
+<!-- ========== 建立商店弹窗 ========== -->
+<div class="modal-overlay" id="createStoreModal">
+  <div class="modal-box">
+    <div class="modal-title">建立我的商店</div>
+    <button class="close-btn" onclick="closeModal('createStoreModal')">&times;</button>
+    <div class="modal-form">
+      <div class="form-group">
+        <label>商店名称 <span style="color:#c62828;">*</span></label>
+        <input type="text" id="storeName" placeholder="请输入商店名称">
+      </div>
+      <div class="form-group">
+        <label>商店简介</label>
+        <textarea id="storeDesc" placeholder="介绍一下你的商店"></textarea>
+      </div>
+      <div class="form-group">
+        <label>商店地址</label>
+        <input type="text" id="storeAddress" placeholder="请输入商店地址">
+      </div>
+      <div class="form-group">
+        <label>联系电话</label>
+        <input type="text" id="storePhone" placeholder="请输入联系电话">
+      </div>
+      <button class="submit-btn" onclick="createStore()">建立商店</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== 请求购买弹窗 ========== -->
+<div class="modal-overlay" id="requestBuyModal">
+  <div class="modal-box">
+    <div class="modal-title">请求购买</div>
+    <button class="close-btn" onclick="closeModal('requestBuyModal')">&times;</button>
+    <div class="modal-form">
+      <div class="form-group">
+        <label>商品名称</label>
+        <input type="text" id="reqProductName" readonly style="background:#f0f0f0; color:#666;">
+      </div>
+      <div class="form-group">
+        <label>请求数量 <span style="color:#c62828;">*</span></label>
+        <input type="number" id="reqQuantity" min="1" placeholder="请输入购买数量">
+      </div>
+      <div class="form-group">
+        <label>期望价格（选填）</label>
+        <input type="number" id="reqPrice" min="0" placeholder="留空则不限制">
+      </div>
+      <div class="form-group">
+        <label>要求说明（选填）</label>
+        <textarea id="reqNote" placeholder="如包邮、发票、颜色等"></textarea>
+      </div>
+      <button class="submit-btn" onclick="submitBuyRequest()">提交请求</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== 评分弹窗 ========== -->
+<div class="modal-overlay" id="ratingModal">
+  <div class="modal-box">
+    <div class="modal-title">评分 & 写评价</div>
+    <button class="close-btn" onclick="closeModal('ratingModal')">&times;</button>
+    <div class="modal-form">
+      <div class="form-group">
+        <label>评分</label>
+        <div class="star-rating" id="starRating">
+          <span class="star" data-v="1">&#9734;</span>
+          <span class="star" data-v="2">&#9734;</span>
+          <span class="star" data-v="3">&#9734;</span>
+          <span class="star" data-v="4">&#9734;</span>
+          <span class="star" data-v="5">&#9734;</span>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>评价内容 <span style="color:#c62828;">*</span></label>
+        <textarea id="reviewText" placeholder="写下你的评价..."></textarea>
+      </div>
+      <button class="submit-btn" onclick="submitReview()">提交评价</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== 商家详情弹窗 ========== -->
+<div class="modal-overlay" id="merchantDetailModal">
+  <div class="modal-box" style="max-width:600px;">
+    <div class="modal-title">商家详情</div>
+    <button class="close-btn" onclick="closeModal('merchantDetailModal')">&times;</button>
+    <div id="merchantDetailContent"></div>
+  </div>
+</div>
+
+<!-- ========== 提示弹窗 ========== -->
+<div class="modal-overlay alert-modal" id="alertModal">
+  <div class="modal-box" style="max-width:400px;">
+    <div class="modal-title" id="alertTitle">提示</div>
+    <div class="alert-text" id="alertText"></div>
+    <button class="alert-btn" onclick="closeModal('alertModal')">我知道了</button>
+  </div>
+</div>
+
+<!-- ========== 上传头像弹窗 ========== -->
+<div class="modal-overlay" id="avatarModal">
+  <div class="modal-box" style="max-width:400px;">
+    <div class="modal-title">上传头像</div>
+    <button class="close-btn" onclick="closeModal('avatarModal')">&times;</button>
+    <div class="modal-form">
+      <div class="form-group">
+        <input type="file" id="avatarInput" accept="image/*" onchange="previewAvatar(event)">
+      </div>
+      <div class="preview-box" id="avatarPreviewBox">
+        <span class="no-preview">选择图片后将在此预览</span>
+      </div>
+      <button class="submit-btn" onclick="uploadAvatar()">确认上传</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== 相册上传弹窗 ========== -->
+<div class="modal-overlay" id="albumModal">
+  <div class="modal-box" style="max-width:400px;">
+    <div class="modal-title">上传照片</div>
+    <button class="close-btn" onclick="closeModal('albumModal')">&times;</button>
+    <div class="modal-form">
+      <div class="form-group">
+        <input type="file" id="albumInput" accept="image/*" multiple onchange="previewAlbum(event)">
+      </div>
+      <div class="preview-box" id="albumPreviewBox">
+        <span class="no-preview">选择图片后将在此预览</span>
+      </div>
+      <button class="submit-btn" onclick="uploadAlbum()">确认上传</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ========== 全局数据 ==========
+let userIdentity = ''; // 'seller', 'buyer', 'user'
+let userAvatar = '';
+let userPhone = '';
+let userAddress = '';
+let userTags = [];
+let userAlbum = [];
+let myStore = null; // { name, description, address, phone, createdAt }
+let publishedInfo = [];
+let publishedProducts = [];
+let buyRequests = []; // { id, productId, productName, buyerName, buyerAvatar, quantity, expectedPrice, note, status, createdAt }
+let reviews = []; // { id, targetName, reviewerName, reviewerAvatar, rating, text, createdAt }
+let forums = [];
+let forumPosts = [];
+
+// 分类列表
+const categories = ['电子产品','服装鞋帽','食品饮料','家居日用','图书文具','美妆个护','运动户外','母婴玩具','数码家电','其他'];
+
+// ========== 初始化 ==========
+function init() {
+  loadFromStorage();
+  updateStats();
+  showHome();
+  document.addEventListener('click', function(e) {
+    const searchWrap = document.querySelector('.search-bar .search-input-wrapper');
+    const results = document.getElementById('searchResults');
+    if (!searchWrap.contains(e.target)) results.classList.remove('active');
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      document.querySelectorAll('.modal-overlay.active').forEach(m => m.classList.remove('active'));
+    }
+  });
+  // 星级评分绑定
+  document.querySelectorAll('#starRating .star').forEach(s => {
+    s.addEventListener('click', function() {
+      const v = parseInt(this.dataset.v);
+      document.querySelectorAll('#starRating .star').forEach(st => {
+        st.classList.toggle('active', parseInt(st.dataset.v) <= v);
+        st.innerHTML = parseInt(st.dataset.v) <= v ? '&#9733;' : '&#9734;';
+      });
+    });
+  });
+}
+
+function loadFromStorage() {
+  try {
+    userIdentity = localStorage.getItem('identity') || '';
+    userAvatar = localStorage.getItem('avatar') || '';
+    userPhone = localStorage.getItem('phone') || '';
+    userAddress = localStorage.getItem('address') || '';
+    userTags = JSON.parse(localStorage.getItem('tags') || '[]');
+    userAlbum = JSON.parse(localStorage.getItem('album') || '[]');
+    myStore = JSON.parse(localStorage.getItem('myStore') || 'null');
+    publishedInfo = JSON.parse(localStorage.getItem('info') || '[]');
+    publishedProducts = JSON.parse(localStorage.getItem('products') || '[]');
+    buyRequests = JSON.parse(localStorage.getItem('buyRequests') || '[]');
+    reviews = JSON.parse(localStorage.getItem('reviews') || '[]');
+    forums = JSON.parse(localStorage.getItem('forums') || '[]');
+    forumPosts = JSON.parse(localStorage.getItem('forumPosts') || '[]');
+  } catch(e) {}
+  updateIdentityUI();
+}
+
+function saveToStorage() {
+  localStorage.setItem('identity', userIdentity);
+  localStorage.setItem('avatar', userAvatar);
+  localStorage.setItem('phone', userPhone);
+  localStorage.setItem('address', userAddress);
+  localStorage.setItem('tags', JSON.stringify(userTags));
+  localStorage.setItem('album', JSON.stringify(userAlbum));
+  localStorage.setItem('myStore', JSON.stringify(myStore));
+  localStorage.setItem('info', JSON.stringify(publishedInfo));
+  localStorage.setItem('products', JSON.stringify(publishedProducts));
+  localStorage.setItem('buyRequests', JSON.stringify(buyRequests));
+  localStorage.setItem('reviews', JSON.stringify(reviews));
+  localStorage.setItem('forums', JSON.stringify(forums));
+  localStorage.setItem('forumPosts', JSON.stringify(forumPosts));
+}
+
+function updateIdentityUI() {
+  const badge = document.getElementById('identityBadge');
+  const display = document.getElementById('identityDisplay');
+  if (!userIdentity) {
+    display.style.display = 'none';
+    document.getElementById('btnMyStore').style.display = 'none';
+    document.getElementById('btnPublishProduct').style.display = 'none';
+    document.getElementById('btnMyProducts').style.display = 'none';
+    document.getElementById('btnMyRequests').style.display = 'none';
+    document.getElementById('btnProfileStore').style.display = 'none';
+    return;
+  }
+  display.style.display = 'inline';
+  let text = '', cls = '';
+  if (userIdentity === 'seller') { text = '商家'; cls = 'seller'; }
+  else if (userIdentity === 'buyer') { text = '买家'; cls = 'buyer'; }
+  else { text = '用户'; cls = 'user'; }
+  badge.innerHTML = `<span class="identity-badge ${cls}">${text}</span>`;
+  // 侧边栏按钮
+  if (userIdentity === 'seller' && myStore) {
+    document.getElementById('btnMyStore').style.display = 'block';
+    document.getElementById('btnPublishProduct').style.display = 'block';
+    document.getElementById('btnMyProducts').style.display = 'block';
+    document.getElementById('btnMyRequests').style.display = 'none';
+    document.getElementById('btnProfileStore').style.display = 'block';
+  } else if (userIdentity === 'buyer') {
+    document.getElementById('btnMyStore').style.display = 'none';
+    document.getElementById('btnPublishProduct').style.display = 'none';
+    document.getElementById('btnMyProducts').style.display = 'none';
+    document.getElementById('btnMyRequests').style.display = 'block';
+    document.getElementById('btnProfileStore').style.display = 'none';
+  } else {
+    document.getElementById('btnMyStore').style.display = 'none';
+    document.getElementById('btnPublishProduct').style.display = 'none';
+    document.getElementById('btnMyProducts').style.display = 'none';
+    document.getElementById('btnMyRequests').style.display = 'none';
+    document.getElementById('btnProfileStore').style.display = 'none';
+  }
+}
+
+// ========== 身份选择 ==========
+let selectedIdentity = '';
+function selectIdentityOption(role) {
+  selectedIdentity = role;
+  document.querySelectorAll('.identity-option').forEach(o => o.classList.remove('selected'));
+  document.getElementById('opt' + role.charAt(0).toUpperCase() + role.slice(1)).classList.add('selected');
+}
+function confirmIdentity() {
+  if (!selectedIdentity) { showAlert('请先选择一个身份'); return; }
+  userIdentity = selectedIdentity;
+  saveToStorage();
+  updateIdentityUI();
+  closeModal('identityModal');
+  showNotification('身份已设置为：' + (userIdentity==='seller'?'商家':userIdentity==='buyer'?'买家':'普通用户'));
+}
+function changeIdentity() {
+  selectedIdentity = '';
+  document.querySelectorAll('.identity-option').forEach(o => o.classList.remove('selected'));
+  document.getElementById('identityModal').classList.add('active');
+}
+
+// ========== 页面导航 ==========
+function setActiveNav(page) {
+  document.querySelectorAll('.sidebar .nav-item').forEach(n => n.classList.remove('active'));
+  const nav = document.querySelector(`.sidebar .nav-item[data-page="${page}"]`);
+  if (nav) nav.classList.add('active');
+}
+function hideAll() {
+  document.querySelectorAll('.manage-view,.business-view,.forum-view,.profile-view,.home-view').forEach(v => v.classList.remove('active'));
+}
+function showHome() {
+  hideAll(); setActiveNav('home'); document.getElementById('homeView').classList.add('active');
+  updateStats();
+}
+function showManage() {
+  hideAll(); setActiveNav('manage'); document.getElementById('manageView').classList.add('active');
+  showManageSub('publish');
+}
+function showBusiness() {
+  if (!userIdentity) {
+    document.getElementById('identityModal').classList.add('active');
+    return;
+  }
+  hideAll(); setActiveNav('business'); document.getElementById('businessView').classList.add('active');
+  showBusinessSub('productPlatform');
+}
+function showForum() {
+  hideAll(); setActiveNav('forum'); document.getElementById('forumView').classList.add('active');
+  showForumSub('create');
+}
+function showProfile() {
+  hideAll(); document.getElementById('profileView').classList.add('active');
+  showProfileSub('info');
+}
+
+function updateStats() {
+  document.getElementById('statInfo').textContent = publishedInfo.length;
+  document.getElementById('statProducts').textContent = publishedProducts.length;
+  document.getElementById('statForums').textContent = forums.length;
+}
+
+// ========== 信息交流 ==========
+function showManageSub(sub) {
+  document.querySelectorAll('#manageView .sub-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  const c = document.getElementById('manageContent');
+  if (sub === 'publish') {
+    c.innerHTML = `
+      <div class="page-title">发布信息</div>
+      <div class="publish-form">
+        <div class="form-group">
+          <label>标题 <span style="color:#c62828;">*</span></label>
+          <input type="text" id="infoTitle" placeholder="请输入标题">
+        </div>
+        <div class="form-group">
+          <label>内容描述 <span style="color:#c62828;">*</span></label>
+          <textarea id="infoContent" placeholder="请输入内容"></textarea>
+        </div>
+        <div class="form-group">
+          <label>标签</label>
+          <input type="text" id="infoTag" placeholder="如：新闻、通知、求助等">
+        </div>
+        <div class="form-group">
+          <label>图片（可选）</label>
+          <input type="file" id="infoImage" accept="image/*" onchange="previewInfoImage(event)">
+          <div class="preview-box" id="infoPreviewBox">
+            <span class="no-preview">选择图片后将在此预览</span>
+          </div>
+        </div>
+        <button class="submit-btn" onclick="publishInfo()">发布信息</button>
+      </div>`;
+  } else {
+    let html = `<div class="page-title">已发布信息</div>`;
+    if (publishedInfo.length === 0) {
+      html += '<div class="empty-state"><div class="empty-icon">&#128196;</div><div class="empty-text">暂无发布的信息</div></div>';
+    } else {
+      html += '<div class="content-list">';
+      publishedInfo.forEach((item, i) => {
+        html += `
+          <div class="content-card">
+            ${item.image ? `<img class="card-img" src="${item.image}">` : ''}
+            <div class="card-body">
+              <div class="card-title">${esc(item.title)} ${item.tag ? '<span style="font-size:11px;padding:2px 8px;background:#fce4e4;color:#c62828;border-radius:8px;">'+esc(item.tag)+'</span>' : ''}</div>
+              <div class="card-desc">${esc(item.content)}</div>
+              <div class="card-meta">发布于 ${item.time}</div>
+            </div>
+            <button class="revoke-btn" onclick="revokeInfo(${i})">撤销</button>
+          </div>`;
+      });
+      html += '</div>';
+    }
+    c.innerHTML = html;
+  }
+}
+function previewInfoImage(e) {
+  const f = e.target.files[0]; if (!f) return;
+  const reader = new FileReader();
+  reader.onload = function(ev) {
+    document.getElementById('infoPreviewBox').innerHTML = `<img src="${ev.target.result}">`;
+  };
+  reader.readAsDataURL(f);
+}
+function publishInfo() {
+  const title = document.getElementById('infoTitle').value.trim();
+  const content = document.getElementById('infoContent').value.trim();
+  const tag = document.getElementById('infoTag').value.trim();
+  const preview = document.getElementById('infoPreviewBox').querySelector('img');
+  const image = preview ? preview.src : '';
+  if (!title || !content) { showAlert('请填写标题和内容'); return; }
+  publishedInfo.unshift({ title, content, tag, image, time: new Date().toLocaleString() });
+  saveToStorage(); updateStats();
+  document.getElementById('infoTitle').value = '';
+  document.getElementById('infoContent').value = '';
+  document.getElementById('infoTag').value = '';
+  document.getElementById('infoPreviewBox').innerHTML = '<span class="no-preview">选择图片后将在此预览</span>';
+  showNotification('信息发布成功');
+  showManageSub('published');
+}
+function revokeInfo(i) {
+  if (!confirm('确定撤销这条信息？')) return;
+  publishedInfo.splice(i, 1);
+  saveToStorage(); updateStats();
+  showManageSub('published');
+}
+
+// ========== 购物买卖 ==========
+function showBusinessSub(sub) {
+  document.querySelectorAll('#businessView .sub-btn').forEach(b => b.classList.remove('active'));
+  if (event && event.target) event.target.classList.add('active');
+  const c = document.getElementById('businessContent');
+
+  if (sub === 'myStore') {
+    if (!myStore) { c.innerHTML = '<div class="page-title">我的商店</div><div class="empty-state"><div class="empty-icon">&#128722;</div><div class="empty-text">你还没有建立商店</div></div>'; return; }
+    const storeProducts = publishedProducts.filter(p => p.sellerName === myStore.name);
+    const storeReviews = reviews.filter(r => r.targetName === myStore.name);
+    const avgRating = storeReviews.length ? (storeReviews.reduce((s,r)=>s+r.rating,0)/storeReviews.length).toFixed(1) : '暂无';
+    let stars = '';
+    for (let i=1;i<=5;i++) stars += i <= Math.round(avgRating) ? '&#9733;' : '&#9734;';
+    c.innerHTML = `
+      <div class="page-title">我的商店</div>
+      <div class="store-header">
+        <div class="store-avatar">${userAvatar ? `<img src="${userAvatar}">` : ''}</div>
+        <div>
+          <div class="store-name">${esc(myStore.name)}</div>
+          <div class="store-desc">${esc(myStore.description)}</div>
+          <div class="store-meta">
+            <span>${myStore.address ? '&#128205; '+esc(myStore.address) : ''}</span>
+            <span>${myStore.phone ? '&#128222; '+esc(myStore.phone) : ''}</span>
+          </div>
+        </div>
+      </div>
+      <div class="store-stats">
+        <div class="store-stat-card"><div class="store-stat-num">${storeProducts.length}</div><div class="store-stat-label">在售商品</div></div>
+        <div class="store-stat-card"><div class="store-stat-num">${buyRequests.filter(r=>r.status==='pending'&&storeProducts.some(p=>p.name===r.productName)).length}</div><div class="store-stat-label">待处理请求</div></div>
+        <div class="store-stat-card"><div class="store-stat-num">${avgRating}</div><div class="store-stat-label">平均评分</div></div>
+      </div>
+      <div class="my-store-tabs">
+        <div class="my-store-tab active" onclick="showStoreTab(event,'products')">在售商品</div>
+        <div class="my-store-tab" onclick="showStoreTab(event,'requests')">购买请求</div>
+        <div class="my-store-tab" onclick="showStoreTab(event,'reviews')">评价与评分</div>
+      </div>
+      <div id="storeTabContent"></div>`;
+    showStoreTabContent('products', storeProducts, storeReviews, avgRating, stars);
+  }
+  else if (sub === 'publishProduct') {
+    if (!myStore) { c.innerHTML = '<div class="page-title">发布商品</div><div class="empty-state"><div class="empty-icon">&#128722;</div><div class="empty-text">请先建立商店</div></div>'; return; }
+    c.innerHTML = `
+      <div class="page-title">发布商品</div>
+      <div class="publish-form">
+        <div class="form-group">
+          <label>商品名称 <span style="color:#c62828;">*</span></label>
+          <input type="text" id="prodName" placeholder="请输入商品名称">
+        </div>
+        <div class="form-group">
+          <label>商品描述 <span style="color:#c62828;">*</span></label>
+          <textarea id="prodDesc" placeholder="请输入商品描述"></textarea>
+        </div>
+        <div class="form-group">
+          <label>价格（元）<span style="color:#c62828;">*</span></label>
+          <input type="number" id="prodPrice" min="0" placeholder="请输入价格">
+        </div>
+        <div class="form-group">
+          <label>库存数量 <span style="color:#c62828;">*</span></label>
+          <input type="number" id="prodStock" min="1" placeholder="请输入库存数量">
+        </div>
+        <div class="form-group">
+          <label>商品分类</label>
+          <select id="prodCategory">
+            ${categories.map(c=>`<option value="${c}">${c}</option>`).join('')}
+          </select>
+        </div>
+        <div class="form-group">
+          <label>商品图片 <span style="color:#c62828;">*</span></label>
+          <input type="file" id="prodImage" accept="image/*" onchange="previewProdImage(event)">
+          <div class="preview-box" id="prodPreviewBox">
+            <span class="no-preview">选择图片后将在此预览</span>
+          </div>
+        </div>
+        <button class="submit-btn" onclick="publishProduct()">发布商品</button>
+      </div>`;
+  }
+  else if (sub === 'myProducts') {
+    const storeProducts = publishedProducts.filter(p => p.sellerName === myStore.name);
+    let html = '<div class="page-title">已发布商品</div>';
+    if (storeProducts.length === 0) {
+      html += '<div class="empty-state"><div class="empty-icon">&#128722;</div><div class="empty-text">暂无已发布的商品</div></div>';
+    } else {
+      html += '<div class="content-list">';
+      storeProducts.forEach((p, idx) => {
+        const realIdx = publishedProducts.findIndex(prod => prod === p);
+        html += `
+          <div class="product-card">
+            <img class="product-img" src="${p.image}">
+            <div class="product-body">
+              <div class="product-title">${esc(p.name)}</div>
+              <div class="product-price">${p.price} 元</div>
+              <div class="product-stock">库存：${p.stock} 件</div>
+              <span class="product-category">${esc(p.category)}</span>
+              <div class="product-meta">发布于 ${p.time}</div>
+            </div>
+            <button class="revoke-btn" onclick="revokeProduct(${realIdx})">撤销</button>
+          </div>`;
+      });
+      html += '</div>';
+    }
+    c.innerHTML = html;
+  }
+  else if (sub === 'productPlatform') {
+    let html = '<div class="page-title">商品平台</div>';
+    html += '<div class="category-filter" id="categoryFilter"></div>';
+    html += '<div class="content-list" id="productList"></div>';
+    c.innerHTML = html;
+    renderCategoryFilter();
+    renderProductList(publishedProducts);
+  }
+  else if (sub === 'merchants') {
+    const merchantMap = {};
+    publishedProducts.forEach(p => {
+      if (!merchantMap[p.sellerName]) merchantMap[p.sellerName] = { name: p.sellerName, avatar: p.sellerAvatar, products: [] };
+      merchantMap[p.sellerName].products.push(p);
+    });
+    const merchants = Object.values(merchantMap);
+    let html = '<div class="page-title">商家商户</div>';
+    if (merchants.length === 0) {
+      html += '<div class="empty-state"><div class="empty-icon">&#128722;</div><div class="empty-text">暂无商家</div></div>';
+    } else {
+      html += '<div class="content-list">';
+      merchants.forEach(m => {
+        const mReviews = reviews.filter(r => r.targetName === m.name);
+        const avg = mReviews.length ? (mReviews.reduce((s,r)=>s+r.rating,0)/mReviews.length).toFixed(1) : '暂无';
+        let stars = '';
+        for (let i=1;i<=5;i++) stars += i <= Math.round(avg) ? '&#9733;' : '&#9734;';
+        html += `
+          <div class="merchant-card" onclick="showMerchantDetail('${esc(m.name)}')">
+            <div class="merchant-avatar">${m.avatar ? `<img src="${m.avatar}">` : ''}</div>
+            <div class="merchant-info">
+              <div class="merchant-name">${esc(m.name)}</div>
+              <div class="merchant-products-count">在售商品 ${m.products.length} 件</div>
+              <div class="merchant-rating">
+                <div class="stars">${stars}</div>
+                <span class="rating-num">${avg}</span>
+                <span class="rating-count">(${mReviews.length} 条评价)</span>
+              </div>
+            </div>
+          </div>`;
+      });
+      html += '</div>';
+    }
+    c.innerHTML = html;
+  }
+  else if (sub === 'myRequests') {
+    let html = '<div class="page-title">我的请求</div>';
+    if (buyRequests.filter(r=>r.buyerName==='我').length === 0) {
+      html += '<div class="empty-state"><div class="empty-icon">&#128230;</div><div class="empty-text">暂无购买请求</div></div>';
+    } else {
+      buyRequests.filter(r=>r.buyerName==='我').forEach(r => {
+        const statusMap = { pending: ['待处理','pending'], accepted: ['已接受','accepted'], rejected: ['已拒绝','rejected'] };
+        const [stText, stCls] = statusMap[r.status] || ['未知','pending'];
+        html += `
+          <div class="my-request-card">
+            <div class="mr-header">
+              <div class="mr-product">${esc(r.productName)}</div>
+              <span class="request-status ${stCls}">${stText}</span>
+            </div>
+            <div class="mr-detail">
+              数量：${r.quantity} 件${r.expectedPrice ? ' | 期望价格：'+r.expectedPrice+' 元' : ''}
+              ${r.note ? '<br>要求：'+esc(r.note) : ''}
+            </div>
+          </div>`;
+      });
+    }
+    c.innerHTML = html;
+  }
+}
+
+function showStoreTab(e, tab) {
+  document.querySelectorAll('.my-store-tab').forEach(t => t.classList.remove('active'));
+  e.target.classList.add('active');
+  const storeProducts = publishedProducts.filter(p => p.sellerName === myStore.name);
+  const storeReviews = reviews.filter(r => r.targetName === myStore.name);
+  const avgRating = storeReviews.length ? (storeReviews.reduce((s,r)=>s+r.rating,0)/storeReviews.length).toFixed(1) : '暂无';
+  let stars = '';
+  for (let i=1;i<=5;i++) stars += i <= Math.round(avgRating) ? '&#9733;' : '&#9734;';
+  showStoreTabContent(tab, storeProducts, storeReviews, avgRating, stars);
+}
+function showStoreTabContent(tab, storeProducts, storeReviews, avgRating, stars) {
+  const c = document.getElementById('storeTabContent');
+  if (tab === 'products') {
+    if (storeProducts.length === 0) { c.innerHTML = '<div class="empty-state"><div class="empty-icon">&#128722;</div><div class="empty-text">暂无在售商品</div></div>'; return; }
+    let html = '<div class="content-list">';
+    storeProducts.forEach(p => {
+      const idx = publishedProducts.findIndex(prod => prod === p);
+      html += `
+        <div class="product-card">
+          <img class="product-img" src="${p.image}">
+          <div class="product-body">
+            <div class="product-title">${esc(p.name)}</div>
+            <div class="product-price">${p.price} 元</div>
+            <div class="product-stock">库存：${p.stock} 件</div>
+            <span class="product-category">${esc(p.category)}</span>
+            <div class="product-meta">发布于 ${p.time}</div>
+          </div>
+          <button class="revoke-btn" onclick="revokeProduct(${idx})">撤销</button>
+        </div>`;
+    });
+    html += '</div>';
+    c.innerHTML = html;
+  } else if (tab === 'requests') {
+    const storeRequests = buyRequests.filter(r => storeProducts.some(p => p.name === r.productName));
+    if (storeRequests.length === 0) { c.innerHTML = '<div class="empty-state"><div class="empty-icon">&#128230;</div><div class="empty-text">暂无购买请求</div></div>'; return; }
+    let html = '';
+    storeRequests.forEach(r => {
+      const statusMap = { pending: ['待处理','pending'], accepted: ['已接受','accepted'], rejected: ['已拒绝','rejected'] };
+      const [stText, stCls] = statusMap[r.status] || ['未知','pending'];
+      html += `
+        <div class="request-card">
+          <div class="request-info">
+            <div class="request-product">${esc(r.productName)}</div>
+            <div class="request-detail">
+              请求人：${esc(r.buyerName)} | 数量：${r.quantity} 件
+              ${r.expectedPrice ? ' | 期望价格：'+r.expectedPrice+' 元' : ''}
+              ${r.note ? '<br>要求：'+esc(r.note) : ''}
+            </div>
+          </div>
+          ${r.status==='pending' ? `
+          <div class="request-actions">
+            <button class="accept-btn" onclick="handleRequest(${r.id},'accepted')">接受</button>
+            <button class="reject-btn" onclick="handleRequest(${r.id},'rejected')">拒绝</button>
+          </div>` : `<span class="request-status ${stCls}">${stText}</span>`}
+          <button class="delete-review-btn" onclick="deleteRequest(${r.id})">删除</button>
+        </div>`;
+    });
+    c.innerHTML = html;
+  } else if (tab === 'reviews') {
+    if (storeReviews.length === 0) { c.innerHTML = '<div class="empty-state"><div class="empty-icon">&#11088;</div><div class="empty-text">暂无评价</div></div>'; return; }
+    let html = `<div style="text-align:center;margin-bottom:20px;">
+      <div style="font-size:48px;font-weight:800;color:#c62828;">${avgRating}</div>
+      <div style="color:#ffc107;font-size:18px;letter-spacing:3px;">${stars}</div>
+      <div style="font-size:12px;color:#999;margin-top:4px;">共 ${storeReviews.length} 条评价</div>
+    </div>`;
+    storeReviews.forEach(r => {
+      html += `
+        <div class="review-item">
+          <div class="review-avatar">${r.reviewerAvatar ? `<img src="${r.reviewerAvatar}">` : ''}</div>
+          <div class="review-body">
+            <div class="review-name">${esc(r.reviewerName)}</div>
+            <div class="review-stars">${'&#9733;'.repeat(r.rating)}${'&#9734;'.repeat(5-r.rating)}</div>
+            <div class="review-text">${esc(r.text)}</div>
+            <div class="review-time">${r.createdAt}</div>
+          </div>
+          <button class="delete-review-btn" onclick="deleteReview(${r.id})">删除</button>
+        </div>`;
+    });
+    c.innerHTML = html;
+  }
+}
+
+function renderCategoryFilter() {
+  const c = document.getElementById('categoryFilter');
+  let html = '<button class="category-btn active" onclick="filterCategory(event,\'all\')">全部</button>';
+  categories.forEach(cat => { html += `<button class="category-btn" onclick="filterCategory(event,'${cat}')">${cat}</button>`; });
+  c.innerHTML = html;
+}
+function filterCategory(e, cat) {
+  document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+  e.target.classList.add('active');
+  if (cat === 'all') renderProductList(publishedProducts);
+  else renderProductList(publishedProducts.filter(p => p.category === cat));
+}
+function renderProductList(products) {
+  const c = document.getElementById('productList');
+  if (products.length === 0) { c.innerHTML = '<div class="empty-state"><div class="empty-icon">&#128722;</div><div class="empty-text">暂无商品</div></div>'; return; }
+  let html = '';
+  products.forEach(p => {
+    html += `
+      <div class="product-card">
+        <img class="product-img" src="${p.image}">
+        <div class="product-body">
+          <div class="product-title">${esc(p.name)}</div>
+          <div class="product-price">${p.price} 元</div>
+          <div class="product-stock">库存：${p.stock} 件</div>
+          <span class="product-category">${esc(p.category)}</span>
+          <div class="product-seller">商家：${esc(p.sellerName)}</div>
+          <div class="product-meta">发布于 ${p.time}</div>
+        </div>
+        <button class="action-btn buy-btn" onclick="openRequestBuy('${esc(p.name)}')">请求购买</button>
+      </div>`;
+  });
+  c.innerHTML = html;
+}
+
+function previewProdImage(e) {
+  const f = e.target.files[0]; if (!f) return;
+  const reader = new FileReader();
+  reader.onload = ev => { document.getElementById('prodPreviewBox').innerHTML = `<img src="${ev.target.result}">`; };
+  reader.readAsDataURL(f);
+}
+function publishProduct() {
+  const name = document.getElementById('prodName').value.trim();
+  const desc = document.getElementById('prodDesc').value.trim();
+  const price = document.getElementById('prodPrice').value;
+  const stock = document.getElementById('prodStock').value;
+  const category = document.getElementById('prodCategory').value;
+  const preview = document.getElementById('prodPreviewBox').querySelector('img');
+  const image = preview ? preview.src : '';
+  if (!name || !desc || !price || !stock || !image) { showAlert('请填写完整商品信息'); return; }
+  publishedProducts.push({ name, description: desc, price: parseFloat(price), stock: parseInt(stock), category, image, sellerName: myStore.name, sellerAvatar: userAvatar, time: new Date().toLocaleString() });
+  saveToStorage(); updateStats();
+  showNotification('商品发布成功');
+  showBusinessSub('myProducts');
+}
+function revokeProduct(idx) {
+  if (!confirm('确定撤销该商品？')) return;
+  publishedProducts.splice(idx, 1);
+  saveToStorage(); updateStats();
+  showBusinessSub('myProducts');
+}
+
+// ========== 购买请求 ==========
+function openRequestBuy(productName) {
+  document.getElementById('reqProductName').value = productName;
+  document.getElementById('reqQuantity').value = '';
+  document.getElementById('reqPrice').value = '';
+  document.getElementById('reqNote').value = '';
+  document.getElementById('requestBuyModal').classList.add('active');
+}
+function submitBuyRequest() {
+  const productName = document.getElementById('reqProductName').value;
+  const quantity = document.getElementById('reqQuantity').value;
+  const expectedPrice = document.getElementById('reqPrice').value;
+  const note = document.getElementById('reqNote').value.trim();
+  if (!quantity) { showAlert('请输入购买数量'); return; }
+  const req = {
+    id: Date.now(), productName, buyerName: '我', buyerAvatar: userAvatar,
+    quantity: parseInt(quantity), expectedPrice: expectedPrice ? parseFloat(expectedPrice) : null,
+    note, status: 'pending', createdAt: new Date().toLocaleString()
+  };
+  buyRequests.push(req);
+  saveToStorage();
+  closeModal('requestBuyModal');
+  showNotification('购买请求已发送');
+}
+function handleRequest(id, status) {
+  const req = buyRequests.find(r => r.id === id);
+  if (!req) return;
+  req.status = status;
+  saveToStorage();
+  // 通知买家
+  const statusText = status === 'accepted' ? '已接受' : '已拒绝';
+  showNotification(`你的购买请求「${req.productName}」已被卖家${statusText}`);
+  showBusinessSub('myStore');
+}
+function deleteRequest(id) {
+  if (!confirm('确定删除该请求？')) return;
+  const idx = buyRequests.findIndex(r => r.id === id);
+  if (idx > -1) buyRequests.splice(idx, 1);
+  saveToStorage();
+  showBusinessSub('myStore');
+}
+
+// ========== 建立商店 ==========
+function openCreateStore() {
+  document.getElementById('storeName').value = '';
+  document.getElementById('storeDesc').value = '';
+  document.getElementById('storeAddress').value = '';
+  document.getElementById('storePhone').value = '';
+  document.getElementById('createStoreModal').classList.add('active');
+}
+function createStore() {
+  const name = document.getElementById('storeName').value.trim();
+  const desc = document.getElementById('storeDesc').value.trim();
+  const address = document.getElementById('storeAddress').value.trim();
+  const phone = document.getElementById('storePhone').value.trim();
+  if (!name) { showAlert('请输入商店名称'); return; }
+  myStore = { name, description: desc, address, phone, createdAt: new Date().toLocaleString() };
+  saveToStorage(); updateIdentityUI();
+  closeModal('createStoreModal');
+  showNotification('商店「' + name + '」建立成功！');
+  showBusinessSub('myStore');
+}
+
+// ========== 评分与评价 ==========
+let ratingTarget = '';
+function openRating(targetName) {
+  ratingTarget = targetName;
+  document.querySelectorAll('#starRating .star').forEach(s => { s.classList.remove('active'); s.innerHTML = '&#9734;'; });
+  document.getElementById('reviewText').value = '';
+  document.getElementById('ratingModal').classList.add('active');
+}
+function submitReview() {
+  const rating = document.querySelectorAll('#starRating .star.active').length;
+  const text = document.getElementById('reviewText').value.trim();
+  if (rating === 0) { showAlert('请选择评分'); return; }
+  if (!text) { showAlert('请输入评价内容'); return; }
+  reviews.push({ id: Date.now(), targetName: ratingTarget, reviewerName: '我', reviewerAvatar: userAvatar, rating, text, createdAt: new Date().toLocaleString() });
+  saveToStorage();
+  closeModal('ratingModal');
+  showNotification('评价提交成功');
+  showBusinessSub('merchants');
+}
+
+function showMerchantDetail(name) {
+  const mProducts = publishedProducts.filter(p => p.sellerName === name);
+  const mReviews = reviews.filter(r => r.targetName === name);
+  const avg = mReviews.length ? (mReviews.reduce((s,r)=>s+r.rating,0)/mReviews.length).toFixed(1) : '暂无';
+  let stars = '';
+  for (let i=1;i<=5;i++) stars += i <= Math.round(avg) ? '&#9733;' : '&#9734;';
+  const merchant = mProducts.length ? mProducts[0] : null;
+  let html = `
+    <div class="merchant-detail-header">
+      <div class="md-avatar">${merchant && merchant.sellerAvatar ? `<img src="${merchant.sellerAvatar}">` : ''}</div>
+      <div>
+        <div class="md-name">${esc(name)}</div>
+        <div class="md-meta">在售商品 ${mProducts.length} 件 | 评分 ${avg} (${mReviews.length} 条)</div>
+      </div>
+    </div>
+    <div style="margin-bottom:16px;">
+      <strong style="color:#c62828;">${stars}</strong> <span style="color:#999;font-size:12px;">${avg}</span>
+    </div>`;
+  if (userIdentity) {
+    html += `<button class="submit-btn" style="margin-bottom:20px;" onclick="openRating('${esc(name)}')">评分 & 写评价</button>`;
+  }
+  html += `<div style="font-weight:600;color:#333;margin-bottom:10px;">在售商品</div>`;
+  if (mProducts.length === 0) {
+    html += '<div class="empty-state"><div class="empty-icon">&#128722;</div><div class="empty-text">该商家暂无商品</div></div>';
+  } else {
+    html += '<div class="merchant-products-grid">';
+    mProducts.forEach(p => {
+      html += `
+        <div class="merchant-product-thumb">
+          <img src="${p.image}">
+          <div class="mp-name">${esc(p.name)}</div>
+        </div>`;
+    });
+    html += '</div>';
+  }
+  html += `<div style="font-weight:600;color:#333;margin:20px 0 10px;">评价 (${mReviews.length})</div>`;
+  if (mReviews.length === 0) {
+    html += '<div class="empty-state"><div class="empty-icon">&#11088;</div><div class="empty-text">暂无评价</div></div>';
+  } else {
+    mReviews.forEach(r => {
+      html += `
+        <div class="review-item">
+          <div class="review-avatar">${r.reviewerAvatar ? `<img src="${r.reviewerAvatar}">` : ''}</div>
+          <div class="review-body">
+            <div class="review-name">${esc(r.reviewerName)}</div>
+            <div class="review-stars">${'&#9733;'.repeat(r.rating)}${'&#9734;'.repeat(5-r.rating)}</div>
+            <div class="review-text">${esc(r.text)}</div>
+            <div class="review-time">${r.createdAt}</div>
+          </div>
+        </div>`;
+    });
+  }
+  document.getElementById('merchantDetailContent').innerHTML = html;
+  document.getElementById('merchantDetailModal').classList.add('active');
+}
+function deleteReview(id) {
+  if (!confirm('确定删除该评价？')) return;
+  const idx = reviews.findIndex(r => r.id === id);
+  if (idx > -1) reviews.splice(idx, 1);
+  saveToStorage();
+  showBusinessSub('myStore');
+}
+
+// ========== 论坛 ==========
+function showForumSub(sub) {
+  document.querySelectorAll('#forumView .sub-btn').forEach(b => b.classList.remove('active'));
+  if (event && event.target) event.target.classList.add('active');
+  const c = document.getElementById('forumContent');
+  if (sub === 'create') {
+    c.innerHTML = `
+      <div class="page-title">创建论坛</div>
+      <div class="publish-form">
+        <div class="form-group">
+          <label>论坛名称 <span style="color:#c62828;">*</span></label>
+          <input type="text" id="forumName" placeholder="请输入论坛名称">
+        </div>
+        <div class="form-group">
+          <label>论坛简介</label>
+          <textarea id="forumDesc" placeholder="介绍一下这个论坛"></textarea>
+        </div>
+        <button class="submit-btn" onclick="createForum()">创建论坛</button>
+      </div>`;
+  } else {
+    let html = '<div class="page-title">论坛列表</div>';
+    if (forums.length === 0) {
+      html += '<div class="empty-state"><div class="empty-icon">&#128172;</div><div class="empty-text">暂无论坛</div></div>';
+    } else {
+      html += '<div class="content-list">';
+      forums.forEach((f, i) => {
+        const fPosts = forumPosts.filter(p => p.forumId === f.id);
+        html += `
+          <div class="content-card">
+            <div class="card-body">
+              <div class="card-title">${esc(f.name)}</div>
+              <div class="card-desc">${esc(f.description)}</div>
+              <div class="card-meta">${fPosts.length} 条帖子 | 创建于 ${f.time}</div>
+            </div>
+            <button class="revoke-btn" onclick="openForumPosts(${f.id})" style="background:#2e7d32;">进入</button>
+            <button class="revoke-btn" onclick="deleteForum(${i})">解散</button>
+          </div>`;
+      });
+      html += '</div>';
+    }
+    c.innerHTML = html;
+  }
+}
+function createForum() {
+  const name = document.getElementById('forumName').value.trim();
+  const desc = document.getElementById('forumDesc').value.trim();
+  if (!name) { showAlert('请输入论坛名称'); return; }
+  forums.push({ id: Date.now(), name, description: desc, time: new Date().toLocaleString() });
+  saveToStorage(); updateStats();
+  showNotification('论坛创建成功');
+  showForumSub('list');
+}
+function deleteForum(i) {
+  if (!confirm('确定解散该论坛？')) return;
+  const fid = forums[i].id;
+  forums.splice(i, 1);
+  forumPosts = forumPosts.filter(p => p.forumId !== fid);
+  saveToStorage(); updateStats();
+  showForumSub('list');
+}
+function openForumPosts(forumId) {
+  const forum = forums.find(f => f.id === forumId);
+  const fPosts = forumPosts.filter(p => p.forumId === forumId);
+  const c = document.getElementById('forumContent');
+  let html = `<div class="page-title">${esc(forum.name)}</div>`;
+  html += `<button class="submit-btn" style="margin-bottom:20px;padding:10px 24px;font-size:14px;" onclick="postInForum(${forumId})">发帖</button>`;
+  if (fPosts.length === 0) {
+    html += '<div class="empty-state"><div class="empty-icon">&#128172;</div><div class="empty-text">暂无帖子，来发第一帖吧</div></div>';
+  } else {
+    html += '<div class="content-list">';
+    fPosts.forEach(p => {
+      html += `
+        <div class="content-card">
+          <div class="card-body">
+            <div class="card-title">${esc(p.content)}</div>
+            <div class="card-meta">匿名用户 | 发布于 ${p.time}</div>
+          </div>
+        </div>`;
+    });
+    html += '</div>';
+  }
+  c.innerHTML = html;
+}
+function postInForum(forumId) {
+  const content = prompt('请输入帖子内容：');
+  if (!content || !content.trim()) return;
+  forumPosts.push({ id: Date.now(), forumId, content: content.trim(), time: new Date().toLocaleString() });
+  saveToStorage();
+  showNotification('发帖成功');
+  openForumPosts(forumId);
+}
+
+// ========== 个人主页 ==========
+function showProfileSub(sub) {
+  document.querySelectorAll('#profileSidebar .sub-btn').forEach(b => b.classList.remove('active'));
+  if (event && event.target) event.target.classList.add('active');
+  const c = document.getElementById('profileContent');
+  if (sub === 'info') {
+    c.innerHTML = `
+      <div class="page-title">个人信息</div>
+      <div class="profile-header">
+        <div class="profile-avatar-large" onclick="document.getElementById('avatarModal').classList.add('active')" style="cursor:pointer;">
+          ${userAvatar ? `<img src="${userAvatar}">` : '<div style="font-size:28px;color:#c62828;">?</div>'}
+        </div>
+        <div>
+          <div class="profile-name">${myStore ? esc(myStore.name) : '未设置名称'}</div>
+          <div class="profile-identity">
+            <span class="identity-label">${userIdentity === 'seller' ? '&#9878; 商家' : userIdentity === 'buyer' ? '&#128722; 买家' : userIdentity === 'user' ? '&#128100; 普通用户' : '未选择身份'}</span>
+            <button class="identity-switch-btn" onclick="changeIdentity()">
+              <span class="switch-icon">&#8634;</span> ${userIdentity ? '切换身份' : '选择身份'}
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="profile-info-card">
+        <div class="info-row"><span class="info-label">电话</span><span class="info-value">${esc(userPhone)||'未设置'}</span></div>
+        <div class="info-row"><span class="info-label">地址</span><span class="info-value">${esc(userAddress)||'未设置'}</span></div>
+        <div class="info-row"><span class="info-label">标签</span><div class="profile-tags">${userTags.map(t=>`<span class="profile-tag">${esc(t)}</span>`).join('')||'无'}</div></div>
+      </div>
+      <div class="publish-form" style="max-width:500px;">
+        <div class="form-group">
+          <label>昵称</label>
+          <input type="text" id="editName" value="${myStore ? esc(myStore.name) : ''}" placeholder="请输入昵称">
+        </div>
+        <div class="form-group">
+          <label>电话</label>
+          <input type="text" id="editPhone" value="${esc(userPhone)}" placeholder="请输入电话">
+        </div>
+        <div class="form-group">
+          <label>地址</label>
+          <input type="text" id="editAddress" value="${esc(userAddress)}" placeholder="请输入地址">
+        </div>
+        <div class="form-group">
+          <label>个人标签（逗号分隔）</label>
+          <input type="text" id="editTags" value="${userTags.join(',')}" placeholder="如：热情,诚信,专业">
+        </div>
+        <button class="submit-btn" onclick="saveProfile()">保存信息</button>
+      </div>`;
+  } else if (sub === 'album') {
+    c.innerHTML = `
+      <div class="page-title">我的相册</div>
+      <button class="submit-btn" style="margin-bottom:20px;padding:10px 24px;font-size:14px;" onclick="document.getElementById('albumModal').classList.add('active')">上传照片</button>
+      <div class="album-grid">
+        ${userAlbum.map((img, i) => `
+          <div class="album-item">
+            <img src="${img}">
+            <button class="delete-album-btn" onclick="deleteAlbumPhoto(${i})">&times;</button>
+          </div>`).join('')}
+      </div>
+      ${userAlbum.length === 0 ? '<div class="empty-state"><div class="empty-icon">&#128247;</div><div class="empty-text">暂无照片</div></div>' : ''}`;
+  } else if (sub === 'myStore') {
+    if (!myStore) { c.innerHTML = '<div class="page-title">我的商店</div><div class="empty-state"><div class="empty-icon">&#128722;</div><div class="empty-text">请先建立商店</div></div>'; return; }
+    // 复用商店展示
+    showBusinessSub('myStore');
+    const storeContent = document.getElementById('storeTabContent').innerHTML;
+    c.innerHTML = `
+      <div class="page-title">我的商店</div>
+      <div class="store-header">
+        <div class="store-avatar">${userAvatar ? `<img src="${userAvatar}">` : ''}</div>
+        <div>
+          <div class="store-name">${esc(myStore.name)}</div>
+          <div class="store-desc">${esc(myStore.description)}</div>
+          <div class="store-meta">
+            <span>${myStore.address ? '&#128205; '+esc(myStore.address) : ''}</span>
+            <span>${myStore.phone ? '&#128222; '+esc(myStore.phone) : ''}</span>
+          </div>
+        </div>
+      </div>`;
+    // 重新渲染商店标签
+    const storeProducts = publishedProducts.filter(p => p.sellerName === myStore.name);
+    const storeReviews = reviews.filter(r => r.targetName === myStore.name);
+    const avgRating = storeReviews.length ? (storeReviews.reduce((s,r)=>s+r.rating,0)/storeReviews.length).toFixed(1) : '暂无';
+    let stars = '';
+    for (let i=1;i<=5;i++) stars += i <= Math.round(avgRating) ? '&#9733;' : '&#9734;';
+    c.innerHTML += `
+      <div class="store-stats">
+        <div class="store-stat-card"><div class="store-stat-num">${storeProducts.length}</div><div class="store-stat-label">在售商品</div></div>
+        <div class="store-stat-card"><div class="store-stat-num">${buyRequests.filter(r=>r.status==='pending'&&storeProducts.some(p=>p.name===r.productName)).length}</div><div class="store-stat-label">待处理请求</div></div>
+        <div class="store-stat-card"><div class="store-stat-num">${avgRating}</div><div class="store-stat-label">平均评分</div></div>
+      </div>
+      <div class="my-store-tabs">
+        <div class="my-store-tab active" onclick="showProfileStoreTab(event,'products')">在售商品</div>
+        <div class="my-store-tab" onclick="showProfileStoreTab(event,'requests')">购买请求</div>
+        <div class="my-store-tab" onclick="showProfileStoreTab(event,'reviews')">评价与评分</div>
+      </div>
+      <div id="profileStoreTabContent"></div>`;
+    showProfileStoreTabContent('products', storeProducts, storeReviews, avgRating, stars);
+  }
+}
+function showProfileStoreTab(e, tab) {
+  document.querySelectorAll('.my-store-tab').forEach(t => t.classList.remove('active'));
+  e.target.classList.add('active');
+  const storeProducts = publishedProducts.filter(p => p.sellerName === myStore.name);
+  const storeReviews = reviews.filter(r => r.targetName === myStore.name);
+  const avgRating = storeReviews.length ? (storeReviews.reduce((s,r)=>s+r.rating,0)/storeReviews.length).toFixed(1) : '暂无';
+  let stars = '';
+  for (let i=1;i<=5;i++) stars += i <= Math.round(avgRating) ? '&#9733;' : '&#9734;';
+  showProfileStoreTabContent(tab, storeProducts, storeReviews, avgRating, stars);
+}
+function showProfileStoreTabContent(tab, storeProducts, storeReviews, avgRating, stars) {
+  const c = document.getElementById('profileStoreTabContent');
+  if (tab === 'products') {
+    if (storeProducts.length === 0) { c.innerHTML = '<div class="empty-state"><div class="empty-icon">&#128722;</div><div class="empty-text">暂无在售商品</div></div>'; return; }
+    let html = '<div class="content-list">';
+    storeProducts.forEach(p => {
+      const idx = publishedProducts.findIndex(prod => prod === p);
+      html += `
+        <div class="product-card">
+          <img class="product-img" src="${p.image}">
+          <div class="product-body">
+            <div class="product-title">${esc(p.name)}</div>
+            <div class="product-price">${p.price} 元</div>
+            <div class="product-stock">库存：${p.stock} 件</div>
+            <span class="product-category">${esc(p.category)}</span>
+            <div class="product-meta">发布于 ${p.time}</div>
+          </div>
+          <button class="revoke-btn" onclick="revokeProduct(${idx})">撤销</button>
+        </div>`;
+    });
+    html += '</div>';
+    c.innerHTML = html;
+  } else if (tab === 'requests') {
+    const storeRequests = buyRequests.filter(r => storeProducts.some(p => p.name === r.productName));
+    if (storeRequests.length === 0) { c.innerHTML = '<div class="empty-state"><div class="empty-icon">&#128230;</div><div class="empty-text">暂无购买请求</div></div>'; return; }
+    let html = '';
+    storeRequests.forEach(r => {
+      const statusMap = { pending: ['待处理','pending'], accepted: ['已接受','accepted'], rejected: ['已拒绝','rejected'] };
+      const [stText, stCls] = statusMap[r.status] || ['未知','pending'];
+      html += `
+        <div class="request-card">
+          <div class="request-info">
+            <div class="request-product">${esc(r.productName)}</div>
+            <div class="request-detail">
+              请求人：${esc(r.buyerName)} | 数量：${r.quantity} 件
+              ${r.expectedPrice ? ' | 期望价格：'+r.expectedPrice+' 元' : ''}
+              ${r.note ? '<br>要求：'+esc(r.note) : ''}
+            </div>
+          </div>
+          ${r.status==='pending' ? `
+          <div class="request-actions">
+            <button class="accept-btn" onclick="handleRequest(${r.id},'accepted')">接受</button>
+            <button class="reject-btn" onclick="handleRequest(${r.id},'rejected')">拒绝</button>
+          </div>` : `<span class="request-status ${stCls}">${stText}</span>`}
+          <button class="delete-review-btn" onclick="deleteRequest(${r.id})">删除</button>
+        </div>`;
+    });
+    c.innerHTML = html;
+  } else if (tab === 'reviews') {
+    if (storeReviews.length === 0) { c.innerHTML = '<div class="empty-state"><div class="empty-icon">&#11088;</div><div class="empty-text">暂无评价</div></div>'; return; }
+    let html = `<div style="text-align:center;margin-bottom:20px;">
+      <div style="font-size:48px;font-weight:800;color:#c62828;">${avgRating}</div>
+      <div style="color:#ffc107;font-size:18px;letter-spacing:3px;">${stars}</div>
+      <div style="font-size:12px;color:#999;margin-top:4px;">共 ${storeReviews.length} 条评价</div>
+    </div>`;
+    storeReviews.forEach(r => {
+      html += `
+        <div class="review-item">
+          <div class="review-avatar">${r.reviewerAvatar ? `<img src="${r.reviewerAvatar}">` : ''}</div>
+          <div class="review-body">
+            <div class="review-name">${esc(r.reviewerName)}</div>
+            <div class="review-stars">${'&#9733;'.repeat(r.rating)}${'&#9734;'.repeat(5-r.rating)}</div>
+            <div class="review-text">${esc(r.text)}</div>
+            <div class="review-time">${r.createdAt}</div>
+          </div>
+          <button class="delete-review-btn" onclick="deleteReview(${r.id})">删除</button>
+        </div>`;
+    });
+    c.innerHTML = html;
+  }
+}
+function saveProfile() {
+  const name = document.getElementById('editName').value.trim();
+  const phone = document.getElementById('editPhone').value.trim();
+  const address = document.getElementById('editAddress').value.trim();
+  const tags = document.getElementById('editTags').value.split(',').map(t=>t.trim()).filter(Boolean);
+  if (myStore && name) myStore.name = name;
+  userPhone = phone; userAddress = address; userTags = tags;
+  saveToStorage(); updateIdentityUI();
+  showNotification('个人信息已保存');
+  showProfileSub('info');
+}
+function deleteAlbumPhoto(i) {
+  userAlbum.splice(i, 1);
+  saveToStorage();
+  showProfileSub('album');
+}
+
+// ========== 头像 ==========
+function previewAvatar(e) {
+  const f = e.target.files[0]; if (!f) return;
+  const reader = new FileReader();
+  reader.onload = ev => { document.getElementById('avatarPreviewBox').innerHTML = `<img src="${ev.target.result}">`; };
+  reader.readAsDataURL(f);
+}
+function uploadAvatar() {
+  const preview = document.getElementById('avatarPreviewBox').querySelector('img');
+  if (!preview) { showAlert('请先选择图片'); return; }
+  userAvatar = preview.src;
+  saveToStorage(); updateIdentityUI();
+  closeModal('avatarModal');
+  showNotification('头像已更新');
+}
+function previewAlbum(e) {
+  const files = e.target.files; if (!files.length) return;
+  const box = document.getElementById('albumPreviewBox');
+  let html = '';
+  for (let f of files) {
+    const reader = new FileReader();
+    reader.onload = ev => { box.innerHTML += `<img src="${ev.target.result}" style="max-width:80px;margin:4px;">`; };
+    reader.readAsDataURL(f);
+  }
+}
+function uploadAlbum() {
+  const imgs = document.getElementById('albumPreviewBox').querySelectorAll('img');
+  imgs.forEach(img => userAlbum.push(img.src));
+  saveToStorage();
+  closeModal('albumModal');
+  showNotification('照片已上传');
+  showProfileSub('album');
+}
+
+// ========== 搜索 ==========
+function doSearch() {
+  const keyword = document.getElementById('searchInput').value.trim().toLowerCase();
+  const category = document.getElementById('searchCategory').value;
+  const results = document.getElementById('searchResults');
+  if (!keyword) { results.classList.remove('active'); return; }
+  let items = [];
+  if (category === 'all' || category === 'info') {
+    publishedInfo.forEach(item => {
+      if (item.title.toLowerCase().includes(keyword) || item.content.toLowerCase().includes(keyword))
+        items.push({ type: 'info', text: item.title, sub: item.content.substring(0,50), cls: 'info' });
+    });
+  }
+  if (category === 'all' || category === 'product') {
+    publishedProducts.forEach(p => {
+      if (p.name.toLowerCase().includes(keyword) || p.description.toLowerCase().includes(keyword))
+        items.push({ type: 'product', text: p.name, sub: p.price+' 元 | '+p.sellerName, cls: 'product' });
+    });
+  }
+  if (category === 'all' || category === 'merchant') {
+    const merchantMap = {};
+    publishedProducts.forEach(p => { if (!merchantMap[p.sellerName]) merchantMap[p.sellerName] = true; });
+    Object.keys(merchantMap).forEach(name => {
+      if (name.toLowerCase().includes(keyword))
+        items.push({ type: 'merchant', text: name, sub: '商家', cls: 'merchant' });
+    });
+  }
+  if (category === 'all' || category === 'forum') {
+    forums.forEach(f => {
+      if (f.name.toLowerCase().includes(keyword) || f.description.toLowerCase().includes(keyword))
+        items.push({ type: 'forum', text: f.name, sub: f.description.substring(0,50), cls: 'forum' });
+    });
+  }
+  if (items.length === 0) {
+    results.innerHTML = '<div class="search-no-result">未找到相关结果</div>';
+  } else {
+    results.innerHTML = items.slice(0, 15).map(item => `
+      <div class="search-result-item">
+        <span class="result-type ${item.cls}">${item.type==='info'?'信息':item.type==='product'?'商品':item.type==='merchant'?'商家':'论坛'}</span>
+        <span class="result-text">${highlightKeyword(item.text, keyword)} <span style="color:#999;font-size:11px;">${esc(item.sub)}</span></span>
+      </div>`).join('');
+  }
+  results.classList.add('active');
+}
+function highlightKeyword(text, keyword) {
+  if (!keyword) return esc(text);
+  const regex = new RegExp(`(${keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+  return esc(text).replace(regex, '<mark>$1</mark>');
+}
+
+// ========== 工具函数 ==========
+function esc(str) {
+  if (!str) return '';
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+function showAlert(msg) {
+  document.getElementById('alertText').textContent = msg;
+  document.getElementById('alertModal').classList.add('active');
+}
+function closeModal(id) {
+  document.getElementById(id).classList.remove('active');
+}
+function showNotification(msg) {
+  const area = document.getElementById('notificationArea');
+  const toast = document.createElement('div');
+  toast.className = 'notification-toast';
+  toast.textContent = msg;
+  area.appendChild(toast);
+  setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 3000);
+}
+
+// ========== 启动 ==========
+init();
+</script>
+</body>
+</html>
