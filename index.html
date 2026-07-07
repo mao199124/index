@@ -130,7 +130,7 @@
   }
   .identity-badge.seller { background: #fff3e0; color: #e65100; }
   .identity-badge.buyer { background: #e8f5e9; color: #2e7d32; }
-  .identity-badge.user { background: #e3f2fd; color: #1565c0; }
+
 
   /* ========== 主体布局 ========== */
   .main-container { display: flex; height: calc(100vh - 60px); }
@@ -856,7 +856,7 @@
 <div class="modal-overlay identity-modal" id="identityModal">
   <div class="modal-box" style="max-width:620px;">
     <div class="modal-title">选择你的身份</div>
-    <div class="alert-text" style="margin-bottom:16px;">进入购物买卖前，请先选择你的身份。选择后将记住，可在个人主页中切换。</div>
+    <div class="alert-text" style="margin-bottom:16px;">进入购物买卖前，请先选择你的身份。卖家需要先建立商店才能发布商品。选择后将记住，可在个人主页中切换。</div>
     <div class="identity-options">
       <div class="identity-option" id="optSeller" onclick="selectIdentityOption('seller')">
         <div class="option-icon">&#9878;</div>
@@ -868,11 +868,7 @@
         <div class="option-title">买家</div>
         <div class="option-desc">浏览商品、请求购买、查看商家、评价与评分</div>
       </div>
-      <div class="identity-option" id="optUser" onclick="selectIdentityOption('user')">
-        <div class="option-icon">&#128100;</div>
-        <div class="option-title">普通用户</div>
-        <div class="option-desc">浏览商品与商家、评价与评分（无需登录）</div>
-      </div>
+
     </div>
     <button class="submit-btn" style="margin-top:20px;" onclick="confirmIdentity()">确认选择</button>
   </div>
@@ -1105,27 +1101,23 @@ function updateIdentityUI() {
   display.style.display = 'inline';
   let text = '', cls = '';
   if (userIdentity === 'seller') { text = '商家'; cls = 'seller'; }
-  else if (userIdentity === 'buyer') { text = '买家'; cls = 'buyer'; }
-  else { text = '用户'; cls = 'user'; }
+  else { text = '买家'; cls = 'buyer'; }
   badge.innerHTML = `<span class="identity-badge ${cls}">${text}</span>`;
   // 侧边栏按钮
-  if (userIdentity === 'seller' && myStore) {
-    document.getElementById('btnMyStore').style.display = 'block';
-    document.getElementById('btnPublishProduct').style.display = 'block';
-    document.getElementById('btnMyProducts').style.display = 'block';
+  if (userIdentity === 'seller') {
+    // 卖家：有商店则显示完整功能，无商店则仅显示商品平台供浏览
+    const hasStore = !!myStore;
+    document.getElementById('btnMyStore').style.display = hasStore ? 'block' : 'none';
+    document.getElementById('btnPublishProduct').style.display = hasStore ? 'block' : 'none';
+    document.getElementById('btnMyProducts').style.display = hasStore ? 'block' : 'none';
     document.getElementById('btnMyRequests').style.display = 'none';
-    document.getElementById('btnProfileStore').style.display = 'block';
-  } else if (userIdentity === 'buyer') {
+    document.getElementById('btnProfileStore').style.display = hasStore ? 'block' : 'none';
+  } else {
+    // 买家
     document.getElementById('btnMyStore').style.display = 'none';
     document.getElementById('btnPublishProduct').style.display = 'none';
     document.getElementById('btnMyProducts').style.display = 'none';
     document.getElementById('btnMyRequests').style.display = 'block';
-    document.getElementById('btnProfileStore').style.display = 'none';
-  } else {
-    document.getElementById('btnMyStore').style.display = 'none';
-    document.getElementById('btnPublishProduct').style.display = 'none';
-    document.getElementById('btnMyProducts').style.display = 'none';
-    document.getElementById('btnMyRequests').style.display = 'none';
     document.getElementById('btnProfileStore').style.display = 'none';
   }
 }
@@ -1143,12 +1135,33 @@ function confirmIdentity() {
   saveToStorage();
   updateIdentityUI();
   closeModal('identityModal');
-  showNotification('身份已设置为：' + (userIdentity==='seller'?'商家':userIdentity==='buyer'?'买家':'普通用户'));
+  showNotification('身份已设置为：' + (userIdentity==='seller'?'商家':'买家'));
+  // 如果是卖家且尚未建立商店，弹出建立商店弹窗
+  if (userIdentity === 'seller' && !myStore) {
+    setTimeout(() => openCreateStore(), 400);
+  }
 }
 function changeIdentity() {
   selectedIdentity = '';
   document.querySelectorAll('.identity-option').forEach(o => o.classList.remove('selected'));
   document.getElementById('identityModal').classList.add('active');
+}
+
+function saveStoreInfo() {
+  const name = document.getElementById('editStoreName').value.trim();
+  const desc = document.getElementById('editStoreDesc').value.trim();
+  const address = document.getElementById('editStoreAddress').value.trim();
+  const phone = document.getElementById('editStorePhone').value.trim();
+  if (!name) { showAlert('请输入商店名称'); return; }
+  myStore.name = name;
+  myStore.description = desc;
+  myStore.address = address;
+  myStore.phone = phone;
+  saveToStorage(); updateIdentityUI();
+  showNotification('商店信息已更新');
+  // Refresh the manage tab
+  const activeTab = document.querySelector('.my-store-tab.active');
+  if (activeTab) activeTab.click();
 }
 
 // ========== 页面导航 ==========
@@ -1310,12 +1323,22 @@ function showBusinessSub(sub) {
         <div class="my-store-tab active" onclick="showStoreTab(event,'products')">在售商品</div>
         <div class="my-store-tab" onclick="showStoreTab(event,'requests')">购买请求</div>
         <div class="my-store-tab" onclick="showStoreTab(event,'reviews')">评价与评分</div>
+        <div class="my-store-tab" onclick="showStoreTab(event,'manage')">管理商店</div>
       </div>
       <div id="storeTabContent"></div>`;
     showStoreTabContent('products', storeProducts, storeReviews, avgRating, stars);
   }
   else if (sub === 'publishProduct') {
-    if (!myStore) { c.innerHTML = '<div class="page-title">发布商品</div><div class="empty-state"><div class="empty-icon">&#128722;</div><div class="empty-text">请先建立商店</div></div>'; return; }
+    if (!myStore) {
+      c.innerHTML = `
+        <div class="page-title">发布商品</div>
+        <div class="empty-state">
+          <div class="empty-icon">&#128722;</div>
+          <div class="empty-text">你还没有建立商店，无法发布商品</div>
+          <button class="submit-btn" style="margin-top:16px;padding:10px 32px;" onclick="openCreateStore()">立即建立商店</button>
+        </div>`;
+      return;
+    }
     c.innerHTML = `
       <div class="page-title">发布商品</div>
       <div class="publish-form">
@@ -1503,6 +1526,27 @@ function showStoreTabContent(tab, storeProducts, storeReviews, avgRating, stars)
         </div>`;
     });
     c.innerHTML = html;
+  } else if (tab === 'manage') {
+    c.innerHTML = `
+      <div class="publish-form" style="max-width:600px;">
+        <div class="form-group">
+          <label>商店名称 <span style="color:#c62828;">*</span></label>
+          <input type="text" id="editStoreName" value="${esc(myStore.name)}" placeholder="请输入商店名称">
+        </div>
+        <div class="form-group">
+          <label>商店简介</label>
+          <textarea id="editStoreDesc" placeholder="介绍一下你的商店">${esc(myStore.description)}</textarea>
+        </div>
+        <div class="form-group">
+          <label>商店地址</label>
+          <input type="text" id="editStoreAddress" value="${esc(myStore.address)}" placeholder="请输入商店地址">
+        </div>
+        <div class="form-group">
+          <label>联系电话</label>
+          <input type="text" id="editStorePhone" value="${esc(myStore.phone)}" placeholder="请输入联系电话">
+        </div>
+        <button class="submit-btn" onclick="saveStoreInfo()">保存修改</button>
+      </div>`;
   } else if (tab === 'reviews') {
     if (storeReviews.length === 0) { c.innerHTML = '<div class="empty-state"><div class="empty-icon">&#11088;</div><div class="empty-text">暂无评价</div></div>'; return; }
     let html = `<div style="text-align:center;margin-bottom:20px;">
@@ -1841,7 +1885,7 @@ function showProfileSub(sub) {
         <div>
           <div class="profile-name">${myStore ? esc(myStore.name) : '未设置名称'}</div>
           <div class="profile-identity">
-            <span class="identity-label">${userIdentity === 'seller' ? '&#9878; 商家' : userIdentity === 'buyer' ? '&#128722; 买家' : userIdentity === 'user' ? '&#128100; 普通用户' : '未选择身份'}</span>
+            <span class="identity-label">${userIdentity === 'seller' ? '&#9878; 商家' : userIdentity === 'buyer' ? '&#128722; 买家' : '未选择身份'}</span>
             <button class="identity-switch-btn" onclick="changeIdentity()">
               <span class="switch-icon">&#8634;</span> ${userIdentity ? '切换身份' : '选择身份'}
             </button>
